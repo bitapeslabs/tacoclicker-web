@@ -1,0 +1,101 @@
+.navbar {
+  border-bottom: 1px solid var(--custom-divider);
+  padding-left: var(--mantine-spacing-xl);
+  padding-right: var(--mantine-spacing-xl);
+  display: flex;
+  height: 65px;
+  align-items: center;
+  position: fixed;
+  z-index: 20;
+  background-color: var(--custom-dimmed-0);
+  width: 100%;
+}
+
+.drawerHeader {
+  background-color: var(--custom-dimmed-0) !important;
+}
+
+.drawerBody {
+  background-color: var(--custom-dimmed-0) !important;
+  color: #fff;
+}
+
+.drawerStack {
+  margin-top: 10px;
+  background-color: var(--custom-dimmed-0);
+}
+
+.linksGroup {
+  align-items: center;
+  display: flex !important;
+  flex-direction: row;
+  display: none;
+  gap: calc(var(--mantine-spacing-xl) * 2) !important;
+}
+
+@media screen and (max-width: 1000px) {
+  .linksGroup {
+    display: none !important;
+  }
+}
+
+.link {
+  color: var(--custom-dimmed-greyed);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.link:hover {
+  color: #fff;
+  filter: drop-shadow(0px 0px 12px #fff);
+}
+
+.drawerCloseButton {
+  background-color: var(--custom-dimmed-2) !important;
+}
+
+.drawerCloseButton:hover {
+  background-color: var(--custom-dimmed-3) !important;
+}
+
+.logoHeaderContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 40px;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logoTitle {
+  color: #fff;
+  font-size: var(--mantine-font-size-lg);
+  letter-spacing: 1px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.selectedLink {
+  color: #ffc107;
+  filter: drop-shadow(0px 0px 12px #ffc107);
+}
+
+.walletButton {
+  font-weight: 900;
+}
+
+.navbarRight {
+  margin-left: auto !important;
+}
+
+.footer > * {
+  min-width: 80px;
+  border-right: 1px solid var(--custom-dimmed-1);
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+.footer > *:first-child {
+  padding-left: 0;
+}

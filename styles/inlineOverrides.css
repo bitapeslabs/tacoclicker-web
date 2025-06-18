@@ -1,0 +1,65 @@
+@import "@mantine/core/styles.css";
+:root {
+  --custom-primary: #16e265;
+  --custom-yellow: #ffc107;
+  --custom-divider: #1e485b;
+  --custom-dimmed-greyed: #265b74;
+  --custom-dimmed-0: #012e43;
+  --custom-dimmed-1: #023147;
+  --custom-dimmed-1-hover: #053d54;
+  --custom-dimmed-2: #054661;
+  --custom-dimmed-3: #0a5b77;
+}
+button {
+  font-weight: 900 !important;
+}
+
+.mantine-select-option:hover {
+  background-color: var(--custom-dimmed-1) !important;
+}
+
+.mantine-button-loader .mantine-Loader-root::after {
+  --loader-color: var(--custom-dimmed-2) !important;
+}
+
+.mantine-slider-track::before {
+  background-color: var(--custom-dimmed-1) !important;
+}
+
+button:disabled {
+  background-color: #111111;
+  color: var(--custom-dimmed-3) !important;
+  border: 1px solid var(--custom-dimmed-1) !important;
+  font-family: "Lilita One", sans-serif;
+}
+
+.mantine-skeleton-root::after {
+  background-color: var(--custom-dimmed-1) !important;
+}
+
+input:focus {
+  border-color: var(--custom-dimmed-3) !important;
+}
+
+.mantine-pagination-control {
+  transition: 0.5s cubic-bezier(0, 0, 0, 1);
+}
+
+.mantine-pagination-control:where([data-active]) {
+  font-weight: 900;
+  transition: 0.5s cubic-bezier(0, 0, 0, 1);
+  background-color: #fff !important;
+  color: #000 !important;
+}
+
+.mantine-menu-item:hover {
+  background-color: var(--custom-dimmed-1) !important;
+}
+
+.mantine-SegmentedControl-label[data-active="true"]
+  .mantine-SegmentedControl-innerLabel {
+  color: #000 !important;
+}
+.mantine-Drawer-overlay {
+  opacity: 1 !important;
+}

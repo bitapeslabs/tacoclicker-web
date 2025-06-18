@@ -1,0 +1,6 @@
+@import "@mantine/core/styles.css";
+@import "./inlineOverrides.css";
+
+:root {
+  background-color: var(--custom-dimmed-0) !important;
+}
