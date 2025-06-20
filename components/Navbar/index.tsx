@@ -4,7 +4,7 @@ import { useDisclosure } from "@mantine/hooks";
 import clsx from "clsx";
 import Link from "next/link";
 import styles from "./styles.module.css";
-import { TacoClickerLogo } from "../SvgAsset";
+import { SvgTacoClickerLogo } from "../SvgAsset";
 import { DrawerRootProps } from "@mantine/core";
 
 type DrawerNames = DrawerRootProps["classNames"];
@@ -28,7 +28,7 @@ export default function Navbar({ selected }: INavbarProps) {
       <Group align="center" className={styles.navbar}>
         <Group align="center">
           <Link href="/" className={styles.logoHeaderContainer}>
-            <TacoClickerLogo size={32} />
+            <SvgTacoClickerLogo size={32} />
             <Title className={styles.logoTitle}>Taco Clicker</Title>
           </Link>
           <Group className={styles.linksGroup}>

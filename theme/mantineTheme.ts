@@ -39,6 +39,7 @@ import {
   Tooltip,
   createTheme,
   rem,
+  Table,
 } from "@mantine/core";
 
 const CONTAINER_SIZES: Record<string, string> = {
@@ -634,7 +635,6 @@ export const globalTheme: MantineThemeOverride = createTheme({
       styles: (theme) => ({
         root: {
           backdropFilter: "blur(10px)",
-          opacity: undefined,
         },
       }),
     }),
@@ -699,6 +699,7 @@ export const globalTheme: MantineThemeOverride = createTheme({
         label: {
           fontSize: theme.fontSizes.md,
           fontWeight: "900 !important",
+          fontFamily: "Red Hat Display, sans-serif",
         },
       }),
 
@@ -707,18 +708,6 @@ export const globalTheme: MantineThemeOverride = createTheme({
       },
 
       vars: (theme, props) => {
-        const colorKey =
-          props.color && Object.keys(theme.colors).includes(props.color)
-            ? props.color
-            : undefined;
-        const isNeutralColor =
-          colorKey &&
-          ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey);
-        const isNeutralPrimaryColor =
-          !colorKey &&
-          ["zinc", "slate", "gray", "neutral", "stone"].includes(
-            theme.primaryColor
-          );
         const variant = props.variant ?? "white";
         return {
           loader: {
@@ -726,7 +715,11 @@ export const globalTheme: MantineThemeOverride = createTheme({
           },
           root: {
             "--button-color": (() => {
-              if (variant === "white" || variant === "primary") {
+              if (
+                variant === "white" ||
+                variant === "primary" ||
+                variant === "green"
+              ) {
                 return "var(--mantine-color-black)";
               }
               if (variant === "outline") {
@@ -743,8 +736,8 @@ export const globalTheme: MantineThemeOverride = createTheme({
               if (variant === "white") {
                 return "var(--mantine-color-white)";
               }
-              if (variant === "primary") {
-                return "var(--custom-primary)";
+              if (variant === "green") {
+                return "var(--custom-green-darker)";
               }
               if (variant === "outline") {
                 return "var(--custom-dimmed-0)";
@@ -755,6 +748,13 @@ export const globalTheme: MantineThemeOverride = createTheme({
               if (variant === "outline") {
                 return `1px solid var(--custom-dimmed-1)`;
               }
+              return undefined;
+            })(),
+            "--button-hover": (() => {
+              if (variant === "green") {
+                return "var(--custom-green)";
+              }
+
               return undefined;
             })(),
           },
@@ -1148,18 +1148,51 @@ export const globalTheme: MantineThemeOverride = createTheme({
         };
       },
     }),
-
-    Modal: Modal.extend({
+    Table: Table.extend({
+      classNames: {
+        table: "mantine-table",
+        th: "mantine-table-th",
+        td: "mantine-table-td",
+      },
       styles: (theme) => ({
-        header: {
-          paddingTop: "30px",
-          paddingBottom: "30px",
+        th: {
+          fontFamily: "Red Hat Display, sans-serif",
+          backgroundColor: "var(--custom-dimmed-0)",
+          color: "var(--custom-disabled-light)",
+          fontWeight: 900,
+        },
+        td: {
+          fontFamily: "Red Hat Display, sans-serif",
+          fontWeight: 900,
           backgroundColor: "var(--custom-dimmed-0)",
           borderColor: "var(--custom-dimmed-1)",
         },
+      }),
+      vars: (theme, props) => ({
+        table: {
+          "--table-border-color": "transparent",
+          "--table-header-bg": "var(--custom-dimmed-0)",
+          "--table-header-color": "var(--custom-disabled)",
+        },
+      }),
+    }),
+
+    Modal: Modal.extend({
+      styles: (theme) => ({
+        title: {
+          fontWeight: 900,
+        },
+
+        header: {
+          fontFamily: "Red Hat Display, sans-serif",
+
+          paddingTop: "20px",
+          paddingBottom: "20px",
+          backgroundColor: "var(--custom-dimmed-0)",
+        },
         body: {
           backgroundColor: "var(--custom-dimmed-0)",
-          borderColor: "var(--custom-dimmed-1)",
+          borderWidth: "0px",
         },
       }),
     }),
@@ -1169,9 +1202,6 @@ export const globalTheme: MantineThemeOverride = createTheme({
         root: {
           backgroundColor: "var(--mantine-color-dark-9)",
           borderRadius: theme.radius.md,
-          borderColor: "var(--custom-dimmed-1)",
-          borderWidth: "1px",
-          borderStyle: "solid",
         },
       }),
       defaultProps: {

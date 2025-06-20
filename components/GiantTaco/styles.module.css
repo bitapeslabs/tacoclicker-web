@@ -1,0 +1,36 @@
+.upperContainer {
+  transition: transform 0.2s cubic-bezier(0, 0, 0, 1);
+  z-index: 1;
+  transform: scale(1);
+
+  position: absolute;
+}
+.upperContainer:hover {
+  cursor: pointer;
+}
+/* already present – kept here for clarity */
+.upperContainer {
+  touch-action: none; /* prevents double-tap zoom / scrolling issues */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+}
+
+/* new: base for both tortilla sprite & +1 label */
+.effectSprite {
+  position: fixed;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.plusOne {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+  user-select: none;
+  z-index: 5;
+}

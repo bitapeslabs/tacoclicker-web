@@ -1,12 +1,19 @@
 "use client";
 import { type CSSVariablesResolver, alpha } from "@mantine/core";
 
+export const customColors = {
+  dimmed0Dark: "#172935",
+  dimmed0: "#1a2c38",
+  dimmed1: "#203543",
+  dimmed2: "#253e4f",
+} as const;
+
 export const globalCSSVariablesResolver: CSSVariablesResolver = () => ({
   variables: {
-    "--custom-dimmed-1": "#023147",
-    "--custom-dimmed-0": "#012e43",
-    "--custom-dimmed-2": "#054661",
-    "--custom-dimmed-3": "#0a5b77",
+    "--custom-green": "#03ff04",
+    "--custom-dimmed-1": "#203543",
+    "--custom-dimmed-0": "#1a2c38",
+    "--custom-dimmed-2": "#253e4f",
     // variables that do not depend on color scheme
     "--mantine-heading-font-weight": "600",
     "--mantine-primary-color-filled-hover": alpha(

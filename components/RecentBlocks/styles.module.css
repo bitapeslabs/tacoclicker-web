@@ -1,0 +1,69 @@
+.upperContainer {
+  width: 100%;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 30px;
+  color: var(--custom-text-color);
+}
+
+.blockItem {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--custom-dimmed-1);
+  border-radius: 18px;
+  margin-bottom: 10px;
+}
+
+.blockHashTd {
+  color: var(--custom-disabled);
+  font-size: 10px;
+}
+
+.blockMultiplierTd {
+  text-align: right;
+  font-weight: 900;
+}
+
+.blockMultiplierTh {
+  text-align: right;
+}
+
+.viewAllButton {
+  align-items: flex-start !important;
+  padding-inline: 10px !important;
+}
+
+.viewAllButtonInner {
+  justify-content: flex-start !important;
+}
+
+.viewAllButton:hover {
+  filter: brightness(0.8);
+}
+
+.viewAllButtonLabel {
+  font-family: "Red Hat Display", sans-serif !important;
+}
+
+.blockItemBigReward {
+  background-color: var(--custom-green);
+  color: var(--custom-dimmed-0);
+}
+
+.blockMultiplier {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  text-align: right;
+  justify-content: flex-end;
+  font-size: 20px;
+}
+
+.blockHeader {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-direction: row;
+}

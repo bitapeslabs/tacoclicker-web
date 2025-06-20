@@ -1,5 +1,4 @@
 .navbar {
-  border-bottom: 1px solid var(--custom-divider);
   padding-left: var(--mantine-spacing-xl);
   padding-right: var(--mantine-spacing-xl);
   display: flex;
@@ -9,6 +8,7 @@
   z-index: 20;
   background-color: var(--custom-dimmed-0);
   width: 100%;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
 }
 
 .drawerHeader {
