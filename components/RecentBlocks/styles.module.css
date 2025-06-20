@@ -18,7 +18,12 @@
 
 .blockHashTd {
   color: var(--custom-disabled);
-  font-size: 10px;
+  font-size: 14px;
+}
+
+.blockHashInner {
+  display: inline-block;
+  width: 320px;
 }
 
 .blockMultiplierTd {

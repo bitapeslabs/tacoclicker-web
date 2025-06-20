@@ -839,7 +839,6 @@ export const globalTheme: MantineThemeOverride = createTheme({
       styles: (theme) => ({
         root: {
           backgroundColor: "var(--custom-dimmed-0)",
-          borderColor: "var(--custom-dimmed-1)",
         },
       }),
       classNames: {
@@ -1166,6 +1165,9 @@ export const globalTheme: MantineThemeOverride = createTheme({
           fontWeight: 900,
           backgroundColor: "var(--custom-dimmed-0)",
           borderColor: "var(--custom-dimmed-1)",
+        },
+        tr: {
+          borderBottom: "none !important",
         },
       }),
       vars: (theme, props) => ({

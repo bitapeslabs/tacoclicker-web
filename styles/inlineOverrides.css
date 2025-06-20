@@ -31,6 +31,9 @@ button {
   background-color: var(--custom-dimmed-1) !important;
 }
 
+.mantine-table tr {
+  border-bottom: none !important;
+}
 .mantine-select-option:hover {
   background-color: var(--custom-dimmed-1) !important;
 }
@@ -62,7 +65,7 @@ button:disabled {
 }
 
 .mantine-skeleton-root::after {
-  background-color: var(--custom-dimmed-1) !important;
+  background-color: var(--custom-dimmed-2) !important;
 }
 
 input:focus {

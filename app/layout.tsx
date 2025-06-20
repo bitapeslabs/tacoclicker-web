@@ -1,5 +1,5 @@
 import "@/styles/global.css";
-
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { globalCSSVariablesResolver, globalTheme } from "@/theme";
 import {
   ColorSchemeScript,
@@ -8,7 +8,7 @@ import {
 } from "@mantine/core";
 import type { Metadata } from "next";
 import { Red_Hat_Display, Red_Hat_Mono, Lilita_One } from "next/font/google";
-
+import { TanstackQueryClientProvider } from "@/providers/QueryProvider";
 const redHatSans = Red_Hat_Display({
   variable: "--font-red-hat-display",
   subsets: ["latin"],
@@ -24,6 +24,7 @@ const lilitaOne = Lilita_One({
   subsets: ["latin"],
   weight: "400",
 });
+const queryClient = new QueryClient();
 
 export const metadata: Metadata = {
   title: "Mezcal",
@@ -43,13 +44,15 @@ export default function RootLayout({
         className={`${redHatSans.variable} ${redHatMono.variable} ${lilitaOne.variable}`}
       >
         <ColorSchemeScript forceColorScheme="dark" />
-        <MantineProvider
-          theme={globalTheme}
-          cssVariablesResolver={globalCSSVariablesResolver}
-          forceColorScheme="dark"
-        >
-          {children}
-        </MantineProvider>
+        <TanstackQueryClientProvider>
+          <MantineProvider
+            theme={globalTheme}
+            cssVariablesResolver={globalCSSVariablesResolver}
+            forceColorScheme="dark"
+          >
+            {children}
+          </MantineProvider>
+        </TanstackQueryClientProvider>
       </body>
     </html>
   );
