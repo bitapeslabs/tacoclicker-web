@@ -99,3 +99,87 @@
 .footer > *:first-child {
   padding-left: 0;
 }
+
+.footer {
+  padding-left: 20px;
+  padding-right: 20px;
+  position: fixed;
+  z-index: 21;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  background-color: var(--custom-dimmed-0);
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
+
+  display: flex;
+  align-items: center;
+}
+
+.footerHeaderContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  gap: 10px;
+  color: var(--custom-dimmed-3);
+  font-size: var(--mantine-font-size-xs);
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+.footerHeaderText {
+  font-family: "Red Hat Display", sans-serif;
+  display: flex;
+  flex-direction: row;
+  color: var(--custom-disabled-light);
+  font-size: var(--mantine-font-size-xs);
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+.footerHeaderValue {
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 900;
+
+  font-family: "Red Hat Mono", monospace;
+  color: #ffffff !important;
+}
+
+.footerSocialsContainer {
+  margin-left: auto;
+}
+
+.footerSocialsContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: none !important;
+}
+
+.footerSocialsContainer > * {
+  border-right: 1px solid var(--custom-dimmed-1);
+  padding-right: 20px;
+  padding-left: 20px;
+  color: var(--custom-disabled-light);
+}
+
+.footerSocialsContainer > *:last-child {
+  border: none !important;
+  padding-right: 0;
+}
+
+.footerSocialsContainer .footerHeaderContainer a {
+  color: var(--custom-disabled-light);
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.footerSocialsContainer .footerHeaderContainer a:hover {
+  color: #fff;
+  filter: drop-shadow(0px 0px 12px #fff);
+}

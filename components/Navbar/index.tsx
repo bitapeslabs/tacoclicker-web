@@ -1,13 +1,26 @@
 "use client";
-import { Box, Burger, Drawer, Group, Stack, Title } from "@mantine/core";
+import { Box, Burger, Drawer, Group, Stack, Title, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import clsx from "clsx";
 import Link from "next/link";
 import styles from "./styles.module.css";
 import { SvgTacoClickerLogo } from "../SvgAsset";
 import { DrawerRootProps } from "@mantine/core";
-
-type DrawerNames = DrawerRootProps["classNames"];
+import {
+  IconAntennaBars1,
+  IconAntennaBars2,
+  IconAntennaBars3,
+  IconAntennaBars4,
+  IconAntennaBars5,
+  IconBlocks,
+  IconBrandGithub,
+  IconBrandX,
+  IconBrandTelegram,
+} from "@tabler/icons-react";
+import AnimatedNumbers from "@/components/AnimatedNumbers";
+import { useGameStore } from "@/store/gameStore";
+import { GITHUB_URL, TELEGRAM_URL, X_URL } from "@/lib/consts";
+import WalletButton from "@/components/Wallet";
 
 const links = [
   { label: "game", to: "/", target: "_self" },
@@ -16,13 +29,33 @@ const links = [
 
 type IAvailableLabels = (typeof links)[number]["label"];
 
-type INavbarProps = {
-  selected?: IAvailableLabels;
+const IconLatency = ({
+  latency,
+  size,
+}: {
+  latency: number | null;
+  size: number;
+}) => {
+  if (latency == null) return null; // prevent hydration mismatch
+
+  if (latency < 100) return <IconAntennaBars5 size={size} color="#16e265" />;
+  if (latency < 200) return <IconAntennaBars4 size={size} color="#ffcc00" />;
+  if (latency < 300) return <IconAntennaBars3 size={size} color="#ffcc00" />;
+  if (latency < 400) return <IconAntennaBars2 size={size} color="#db3a3a" />;
+
+  return <IconAntennaBars1 size={size} color="#db3a3a" />;
 };
 
-export default function Navbar({ selected }: INavbarProps) {
-  const [opened, { toggle, close }] = useDisclosure(false);
+type INavbarProps = {
+  selected?: IAvailableLabels;
+  excludeFooter?: boolean;
+};
 
+export default function Navbar({ selected, excludeFooter }: INavbarProps) {
+  const [opened, { toggle, close }] = useDisclosure(false);
+  const { recentBlocks, latency } = useGameStore();
+
+  const blockInfo = recentBlocks[0] ?? { blockNumber: 0 };
   return (
     <Box bg="dark.9">
       <Group align="center" className={styles.navbar}>
@@ -47,8 +80,11 @@ export default function Navbar({ selected }: INavbarProps) {
             ))}
           </Group>
         </Group>
-
         <Group className={styles.navbarRight}>
+          <Box visibleFrom="lg">
+            <WalletButton />
+          </Box>
+
           <Burger
             opened={opened}
             onClick={toggle}
@@ -88,6 +124,52 @@ export default function Navbar({ selected }: INavbarProps) {
           ))}
         </Stack>
       </Drawer>
+      {!excludeFooter && (
+        <Box className={styles.footer}>
+          <Box className={styles.footerHeaderContainer}>
+            <IconLatency latency={latency ?? 1000} size={16} />
+            <Box className={styles.footerHeaderText}>
+              <Text className={styles.footerHeaderValue}>
+                {latency ?? "--"}
+              </Text>
+              &nbsp;&nbsp;ms
+            </Box>
+          </Box>
+          <Box className={styles.footerHeaderContainer}>
+            <IconBlocks size={16} color="#60a5fa" />
+            <Box className={styles.footerHeaderText}>
+              Current Block:&nbsp;&nbsp;
+              {blockInfo ? (
+                <AnimatedNumbers
+                  key={blockInfo?.blockNumber ?? 0}
+                  useThousandsSeparator
+                  animateToNumber={blockInfo.blockNumber ?? 0}
+                  className={styles.footerHeaderValue}
+                />
+              ) : (
+                "--"
+              )}
+            </Box>
+          </Box>
+          <Box className={styles.footerSocialsContainer}>
+            <Box className={styles.footerHeaderContainer}>
+              <Link href={GITHUB_URL} target="_blank">
+                <IconBrandGithub size={20} />
+              </Link>
+            </Box>
+            <Box className={styles.footerHeaderContainer}>
+              <Link href={X_URL} target="_blank">
+                <IconBrandX size={20} />
+              </Link>
+            </Box>
+            <Box className={styles.footerHeaderContainer}>
+              <Link href={TELEGRAM_URL} target="_blank">
+                <IconBrandTelegram size={20} />
+              </Link>
+            </Box>
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 }

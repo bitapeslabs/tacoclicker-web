@@ -1,0 +1,50 @@
+.modalTitle {
+  font-size: var(--mantine-font-size-xl);
+  font-weight: 900;
+}
+
+.modalStack {
+  display: flex;
+  gap: 10px;
+}
+
+.warning {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.understandButton {
+  width: 100%;
+}
+
+.modalButton {
+  --button-padding-x: 10px !important;
+  height: 70px;
+  justify-content: flex-start;
+  background-color: var(--custom-dimmed-1);
+  color: #fff !important;
+}
+
+.modalButton:hover {
+  background-color: var(--custom-dimmed-2);
+}
+
+.modalButtonGroup {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+}
+
+.modalButtonInner {
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.modalButtonWalletText {
+  font-size: var(--mantine-font-size-lg);
+  font-weight: 700;
+}

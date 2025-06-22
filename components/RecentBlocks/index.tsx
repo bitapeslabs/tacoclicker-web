@@ -22,18 +22,16 @@ import {
   play2xMultiplierSound,
   play1xMultiplierSound,
   playClickSound,
+  playCrunchSound,
+  playClickBackSound,
 } from "@/lib/sounds";
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { CopyButton, ActionIcon, Tooltip } from "@mantine/core";
+import { ActionIcon } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-
-import { esplora_getblocks } from "@/lib/apis/esplora"; // adapt path as needed
-import {
-  IEsploraBlockHeader,
-  EsploraFetchError,
-} from "@/lib/apis/esplora/types"; // adapt path as needed
-import { BoxedError, BoxedResponse, isBoxedError } from "@/lib/boxed";
+import { getMultiplierFromBlockHash } from "@/lib/crypto/taco";
+import { esplora_getblocks } from "@/lib/apis/esplora";
+import { isBoxedError } from "@/lib/boxed";
 
 const copyText = async (text: string) => {
   try {
@@ -54,19 +52,26 @@ const copyText = async (text: string) => {
   }
 };
 
+const RecentBlocksPlaceholder = () => (
+  <motion.div
+    layout
+    className={clsx(styles.blockItem, styles.blockItemSkeleton)}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.3 }}
+  >
+    <Skeleton height={14} width={90} mb={8} />
+    <Skeleton height={26} width={70} style={{ marginLeft: "auto" }} />
+  </motion.div>
+);
+
 function AllBlocksTable() {
-  // `undefined` ⇒ tip.  Any other number ⇒ `start_height` for the /blocks endpoint
   const [startHeight, setStartHeight] = useState<number | undefined>(undefined);
-  // simple stack so we can move back toward the tip
   const [history, setHistory] = useState<(number | undefined)[]>([]);
   const [lastCopied, setLastCopied] = useState<string | null>(null);
 
-  const {
-    data: blocks,
-    isLoading,
-    isError,
-    refetch,
-  } = useQuery({
+  const { data: blocks, isLoading } = useQuery({
+    //TODO: add latest block here so queries are invalidated when a new block comes from socket
     queryKey: ["blocks", startHeight],
     queryFn: async () => {
       const res = await esplora_getblocks(startHeight);
@@ -82,17 +87,14 @@ function AllBlocksTable() {
       return;
     }
     if (!blocks || blocks.data.length === 0) return;
-    // push current page so we can come back with “Previous”
     setHistory((h) => [...h, startHeight]);
-    // `esplora /blocks/:height` lists 10 blocks **downward** from :height, inclusive.
-    // So the next page (older blocks) starts one below the last block we just saw.
     const nextStart = blocks.data[blocks.data.length - 1].height - 1;
     setStartHeight(nextStart);
+    playClickSound();
   };
 
   const handlePrev = () => {
     if (!history.length) {
-      // Already at the tip
       setStartHeight(undefined);
       return;
     }
@@ -100,6 +102,7 @@ function AllBlocksTable() {
     const prevStart = prevHist.pop();
     setHistory(prevHist);
     setStartHeight(prevStart);
+    playClickBackSound();
   };
 
   const skeletonRows = Array.from({ length: 10 }).map((_, i) => (
@@ -116,8 +119,10 @@ function AllBlocksTable() {
     </Table.Tr>
   ));
 
-  const blockRows =
-    (blocksReady ? blocks.data : []).map((block) => (
+  const blockRows = (blocksReady ? blocks.data : []).map((block) => {
+    const multiplier = getMultiplierFromBlockHash(block.id);
+
+    return (
       <Table.Tr key={block.id}>
         <Table.Td>{block.height.toLocaleString("en-US")}</Table.Td>
 
@@ -146,11 +151,18 @@ function AllBlocksTable() {
           </ActionIcon>
         </Table.Td>
 
-        <Table.Td className={styles.blockMultiplierTd}>
-          {block.tx_count}
+        <Table.Td
+          className={styles.blockMultiplierTd}
+          style={{
+            color:
+              multiplier > 2 ? "var(--custom-green)" : "var(--custom-disabled)",
+          }}
+        >
+          {multiplier.toFixed(2)}x
         </Table.Td>
       </Table.Tr>
-    )) ?? [];
+    );
+  });
 
   return (
     <Box>
@@ -159,7 +171,7 @@ function AllBlocksTable() {
           <Table.Tr>
             <Table.Th>Height</Table.Th>
             <Table.Th>Hash</Table.Th>
-            <Table.Th className={styles.blockMultiplierTh}>Txs</Table.Th>
+            <Table.Th className={styles.blockMultiplierTh}>Multiplier</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{isLoading ? skeletonRows : blockRows}</Table.Tbody>
@@ -212,7 +224,7 @@ const itemVariants: Variants = {
 };
 
 export function RecentBlocks() {
-  const { recentBlocks, addNewRecentBlock } = useGameStore();
+  const { recentBlocks } = useGameStore();
   const hasMounted = useRef(false);
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -220,17 +232,6 @@ export function RecentBlocks() {
     playClickSound();
     open();
   };
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      addNewRecentBlock({
-        blockNumber: Math.floor(Math.random() * 1_000_000),
-        hash: `dummyHash${Math.floor(Math.random() * 1000)}`,
-        multiplier: +(Math.random() * 1200 + 1).toFixed(2),
-      });
-    }, 60000 * 10);
-    return () => clearInterval(id);
-  }, [addNewRecentBlock]);
 
   useEffect(() => {
     if (!hasMounted.current) {
@@ -285,12 +286,16 @@ export function RecentBlocks() {
       <Box className={styles.title}>Latest Blocks</Box>
 
       <AnimatePresence mode="popLayout" initial={false}>
-        {recentBlocks.map((block, idx) => {
-          const isFirst = idx === 0;
+        {Array.from({ length: 4 }).map((_, i) => {
+          const block = recentBlocks[i]; // undefined until loaded
+          const key = `slot-${i}`; // ▸ stable key ⇢ smooth swap
 
+          if (!block) return <RecentBlocksPlaceholder key={key} />;
+
+          const isFirst = i === 0;
           return (
             <motion.div
-              key={block.hash}
+              key={key}
               custom={isFirst}
               variants={itemVariants}
               initial="hidden"
@@ -322,7 +327,6 @@ export function RecentBlocks() {
           );
         })}
       </AnimatePresence>
-
       <Button
         variant="transparent"
         size="lg"

@@ -21,12 +21,13 @@ export type ITacoBlock = {
 };
 
 interface GameStore {
+  latency: number;
   proofOfClickState: IProofOfClickState;
   userTortillasPerBlock: number;
   totalTortillasPerBlock: number;
   unclaimedTortillas: number;
   recentBlocks: ITacoBlock[];
-
+  setLatency: (latency: number) => void;
   setProofOfClickState: (p?: Partial<IProofOfClickState>) => void;
   doProofOfClickHash: () => void;
   addNewRecentBlock: (block: ITacoBlock) => void;
@@ -42,37 +43,17 @@ const defaultProofOfClickState: IProofOfClickState = {
   iterations: 0,
 };
 
-const dummyRecentBlocks: ITacoBlock[] = [
-  {
-    blockNumber: 926_003,
-    hash: "00000000000000000001f5f31996db41a0365cf2103e7bd9a69fd93084ba2357",
-    multiplier: 1.01,
-  },
-  {
-    blockNumber: 926_002,
-    hash: "00000000000000000001f5f41996db41a0365cf2103e7bd9a69fd93084ba2357",
-    multiplier: 56.44,
-  },
-  {
-    blockNumber: 926_001,
-    hash: "00000000000000000001f5f51996db41a0365cf2103e7bd9a69fd93084ba2357",
-    multiplier: 3.51,
-  },
-  {
-    blockNumber: 926_000,
-    hash: "00000000000000000001f5f61996db41a0365cf2103e7bd9a69fd93084ba2357",
-    multiplier: 1.52,
-  },
-];
-
 export const useGameStore = create<GameStore>()((set) => ({
   proofOfClickState: defaultProofOfClickState,
   userTortillasPerBlock: 0,
   totalTortillasPerBlock: 0,
   unclaimedTortillas: 0,
-
-  recentBlocks: dummyRecentBlocks,
-
+  latency: 0,
+  recentBlocks: [],
+  setLatency: (latency) =>
+    set((state) => ({
+      latency,
+    })),
   setProofOfClickState: (p) =>
     set((state) => ({
       proofOfClickState: p

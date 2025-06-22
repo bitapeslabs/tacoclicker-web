@@ -65,7 +65,7 @@ button:disabled {
 }
 
 .mantine-skeleton-root::after {
-  background-color: var(--custom-dimmed-2) !important;
+  background-color: var(--custom-dimmed-1) !important;
 }
 
 input:focus {

@@ -125,11 +125,11 @@ export default function Home() {
               </Box>
             </Box>
           </Box>
-          <Box className={styles.recentBlocksContainer}>
+          <Box className={styles.recentBlocksContainer} visibleFrom="md">
             <RecentBlocks />
           </Box>
         </Box>
-        <Box className={styles.upperToolbarContainer}></Box>
+        <Box className={styles.upperToolbarContainer} visibleFrom="lg"></Box>
       </Box>
     </Box>
   );

@@ -610,6 +610,9 @@ export const globalTheme: MantineThemeOverride = createTheme({
 
     Menu: Menu.extend({
       styles: (theme) => ({
+        root: {
+          fontFamily: "Red Hat Display, sans-serif",
+        },
         dropdown: {
           backgroundColor: "var(--custom-dimmed-0)",
           borderColor: "var(--custom-dimmed-1)",
@@ -621,6 +624,8 @@ export const globalTheme: MantineThemeOverride = createTheme({
 
         item: {
           fontSize: theme.fontSizes.md,
+          fontFamily: "Red Hat Display, sans-serif",
+
           "&[dataHovered]": {
             backgroundColor: "var(--custom-dimmed-1)",
           },
@@ -689,9 +694,9 @@ export const globalTheme: MantineThemeOverride = createTheme({
     Button: Button.extend({
       styles: (theme) => ({
         loader: {
-          color: "var(--custom-dimmed-3)",
-          borderColor: "var(--custom-dimmed-3)",
-          outlineColor: "var(--custom-dimmed-3)",
+          color: "var(--custom-disabled)",
+          borderColor: "var(--custom-disabled)",
+          outlineColor: "var(--custom-disabled)",
         },
         root: {
           borderRadius: theme.radius.md,
@@ -753,6 +758,10 @@ export const globalTheme: MantineThemeOverride = createTheme({
             "--button-hover": (() => {
               if (variant === "green") {
                 return "var(--custom-green)";
+              }
+
+              if (variant === "white" || variant === "default") {
+                return "#cccccc";
               }
 
               return undefined;

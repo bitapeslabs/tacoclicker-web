@@ -14,6 +14,14 @@ export function playClickSound() {
   });
 }
 
+export function playClickBackSound() {
+  const audio = new Audio("/sounds/clickback.wav");
+  audio.volume = 0.2; // Adjust volume as needed
+  audio.play().catch((error) => {
+    console.log("Error playing click back sound:", error);
+  });
+}
+
 export function play1xMultiplierSound() {
   const audio = new Audio("/sounds/multipliers/1x.mp3");
   audio.volume = 0.5; // Adjust volume as needed

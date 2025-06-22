@@ -8,7 +8,7 @@ import {
 } from "@mantine/core";
 import type { Metadata } from "next";
 import { Red_Hat_Display, Red_Hat_Mono, Lilita_One } from "next/font/google";
-import { TanstackQueryClientProvider } from "@/providers/QueryProvider";
+import Providers from "@/providers";
 const redHatSans = Red_Hat_Display({
   variable: "--font-red-hat-display",
   subsets: ["latin"],
@@ -44,7 +44,7 @@ export default function RootLayout({
         className={`${redHatSans.variable} ${redHatMono.variable} ${lilitaOne.variable}`}
       >
         <ColorSchemeScript forceColorScheme="dark" />
-        <TanstackQueryClientProvider>
+        <Providers>
           <MantineProvider
             theme={globalTheme}
             cssVariablesResolver={globalCSSVariablesResolver}
@@ -52,7 +52,7 @@ export default function RootLayout({
           >
             {children}
           </MantineProvider>
-        </TanstackQueryClientProvider>
+        </Providers>
       </body>
     </html>
   );
