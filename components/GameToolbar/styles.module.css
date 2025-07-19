@@ -1,0 +1,254 @@
+.upperContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.toolbarContentTop {
+  flex-direction: column;
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  display: flex;
+  background-color: #1a2c38;
+  box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  padding-top: 70px;
+  padding-bottom: 70px;
+}
+
+.upgradeHeaderTitle {
+  font-size: 36px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.toolbarContentBottom {
+  flex-direction: column;
+  display: flex;
+  width: 100%;
+  position: relative;
+}
+
+.disabledGameOverlay {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  z-index: 18;
+  background-color: #0f151ac2;
+  width: 100%;
+  height: calc(100vh - 350px);
+  backdrop-filter: blur(5px);
+}
+
+.disabledGameTitle {
+  width: 350px;
+  text-align: center;
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 900;
+}
+
+.upgradesContainer {
+  display: flex;
+  gap: 1px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  padding-bottom: 42px;
+}
+
+.upgradeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 20px;
+
+  font-size: var(--mantine-font-size-lg);
+  font-weight: 700;
+  color: #fff;
+}
+
+.upgradesTitle {
+  display: flex;
+  background-color: var(--custom-dimmed-2);
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+}
+
+.upgradeItem {
+  user-select: none !important;
+  position: relative;
+  width: 100%;
+  display: flex;
+  gap: 15px;
+  letter-spacing: 1px;
+
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background-color: var(--custom-dimmed-1);
+  padding: 10px;
+}
+
+.upgradeItem:hover {
+  cursor: pointer;
+  filter: brightness(1.15);
+}
+
+.upgradeItem:active {
+  cursor: pointer;
+  filter: brightness(1.25);
+}
+
+.upgradeItem:hover .upgradeImageWrapper {
+  background-color: #fad49c;
+}
+
+.upgradeImageWrapper {
+  background-color: var(--custom-dimmed-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+}
+
+.upgradeItem:hover {
+  background: var(--custom-dimmed-1);
+}
+
+.upgradeImageInner {
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+}
+
+.upgradeName {
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 900;
+}
+
+.upgradeTortillaIcon {
+  transform: rotate(-20deg);
+}
+
+.upgradeAmountOwned {
+  display: flex;
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 900;
+  color: var(--custom-disabled);
+  font-size: 40px;
+  margin-left: auto;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin-right: 10px;
+}
+
+.upgradePrice {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: fit-content;
+  padding: 8px;
+  padding-left: 20px;
+  padding-right: 20px;
+  gap: 8px;
+  border-radius: 8px;
+  font-family: "Lilita One", sans-serif;
+  font-weight: 900;
+  color: #fff;
+  background-color: var(--custom-dimmed-2);
+  font-size: var(--mantine-font-size-md);
+}
+
+.tooltipUpper {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tooltip {
+  padding: 10px;
+  position: fixed; /* ignore scrolling inside toolbar */
+  width: 450px; /* keep in sync with TS constant */
+  height: fit-content;
+  background: var(--mantine-color-body);
+  border: 1px solid var(--custom-dimmed-2);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  font-size: 14px;
+  line-height: 1.3;
+  pointer-events: none; /* don’t hijack hover */
+  z-index: 9999;
+}
+
+.tooltipCatchphrase {
+  margin-top: 10px;
+  font-family: "Red Hat Display", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--custom-disabled);
+}
+
+.tooltipOwnedText {
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 700;
+  color: var(--custom-disabled);
+  font-size: 14px;
+  background-color: var(--custom-dimmed-2);
+  width: fit-content;
+  padding: 8px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-radius: 8px;
+  gap: 8px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  font-weight: 900;
+}
+
+.tooltipTitleHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tooltipTitle {
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+}
+
+.tooltipInfo {
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 700;
+  color: var(--custom-disabled);
+  font-size: 12px;
+  margin-top: 10px;
+  padding: 8px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: var(--custom-dimmed-2);
+  display: inline-flex;
+  border-radius: 8px;
+  width: 100%;
+}

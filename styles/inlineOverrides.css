@@ -1,7 +1,11 @@
 @import "@mantine/core/styles.css";
 :root {
+  --mantine-color-dark-1: #1a2c38;
   --custom-green-darker: #04dd04;
   --custom-green: #03ff04;
+  --custom-red: #d64545;
+
+  --custom-pink: #e16be6;
   --custom-yellow: #ffc107;
   --custom-divider: #1e485b;
   --custom-dimmed-0-dark: #172935;
@@ -62,6 +66,18 @@ button:disabled {
 
 .mantine-Button-root:active {
   transition: none !important;
+}
+
+.mantine-segmented-control-indicator {
+  background-color: #fff !important;
+}
+
+.mantine-segmented-control-indicator[data-active="false"] {
+  background-color: #fff !important;
+}
+
+.mantine-Button-label {
+  font-weight: 900 !important;
 }
 
 .mantine-skeleton-root::after {

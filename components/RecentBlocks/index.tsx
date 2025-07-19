@@ -33,6 +33,8 @@ import { getMultiplierFromBlockHash } from "@/lib/crypto/taco";
 import { esplora_getblocks } from "@/lib/apis/esplora";
 import { isBoxedError } from "@/lib/boxed";
 
+export const SALSA_BLOCK_MODULO = 2;
+
 const copyText = async (text: string) => {
   try {
     await navigator.clipboard.writeText(text);
@@ -291,6 +293,7 @@ export function RecentBlocks() {
           const key = `slot-${i}`; // ▸ stable key ⇢ smooth swap
 
           if (!block) return <RecentBlocksPlaceholder key={key} />;
+          const isSalsaBlock = block.blockNumber % SALSA_BLOCK_MODULO === 0;
 
           const isFirst = i === 0;
           return (
@@ -304,12 +307,15 @@ export function RecentBlocks() {
               layout
               className={clsx(
                 styles.blockItem,
-                block.multiplier > 2 && styles.blockItemBigReward
+                block.multiplier > 2 && styles.blockItemBigReward,
+                isSalsaBlock && styles.blockItemSalsaBlock
               )}
             >
               <Box className={styles.blockHeader}>
                 <IconBlocks size={18} />{" "}
                 {block.blockNumber.toLocaleString("en-US")}
+                <br />
+                {isSalsaBlock ? " (Salsa Block)" : ""}
               </Box>
 
               <Box

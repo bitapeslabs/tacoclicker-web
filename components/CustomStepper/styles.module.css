@@ -1,0 +1,72 @@
+.container {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 9999px; /* pill */
+  background: var(--custom-dimmed-1);
+  width: fit-content;
+  gap: 20px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+
+  justify-content: space-between;
+}
+
+.stepItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  user-select: none;
+  font-family: "Red Hat Display", sans-serif;
+}
+
+/* Icon Circles */
+.iconCircle {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.75rem;
+  line-height: 1.5rem;
+  text-align: center;
+  color: var(--custom-dimmed-1);
+  background-color: var(--custom-disabled);
+  transition: background-color 150ms ease, color 150ms ease;
+  font-weight: 900;
+}
+
+.iconActive {
+  background-color: #ffc107; /* yellow */
+  color: #000;
+}
+
+.iconCompleted {
+  background-color: #03ff04; /* green */
+  color: #000;
+}
+
+.iconError {
+  background-color: #d64545; /* red */
+  color: #fff;
+}
+
+/* Labels */
+.label {
+  font-weight: 900;
+  font-size: 0.875rem;
+  color: var(--custom-dimmed-1);
+  transition: color 150ms ease;
+}
+
+.labelActive {
+  color: #fff;
+}
+
+.labelCompleted {
+  color: #fff;
+}
+
+.labelError {
+  color: #fff;
+}
+
+.labelPending {
+  color: var(--custom-disabled);
+}

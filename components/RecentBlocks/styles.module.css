@@ -31,6 +31,15 @@
   font-weight: 900;
 }
 
+.blockItemSalsaBlock {
+  background-color: var(--custom-yellow);
+  color: #000 !important;
+}
+
+.blockItemSalsaBlock .blockMultiplier {
+  color: #000 !important;
+}
+
 .blockMultiplierTh {
   text-align: right;
 }

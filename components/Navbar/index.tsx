@@ -17,13 +17,13 @@ import {
   IconBrandX,
   IconBrandTelegram,
 } from "@tabler/icons-react";
-import AnimatedNumbers from "@/components/AnimatedNumbers";
 import { useGameStore } from "@/store/gameStore";
 import { GITHUB_URL, TELEGRAM_URL, X_URL } from "@/lib/consts";
 import WalletButton from "@/components/Wallet";
 
 const links = [
   { label: "game", to: "/", target: "_self" },
+  { label: "airdrop", to: "/airdrop", target: "_self" },
   { label: "how to play", to: "/how-to-play", target: "_self" },
 ] as const;
 
@@ -139,16 +139,9 @@ export default function Navbar({ selected, excludeFooter }: INavbarProps) {
             <IconBlocks size={16} color="#60a5fa" />
             <Box className={styles.footerHeaderText}>
               Current Block:&nbsp;&nbsp;
-              {blockInfo ? (
-                <AnimatedNumbers
-                  key={blockInfo?.blockNumber ?? 0}
-                  useThousandsSeparator
-                  animateToNumber={blockInfo.blockNumber ?? 0}
-                  className={styles.footerHeaderValue}
-                />
-              ) : (
-                "--"
-              )}
+              {blockInfo
+                ? blockInfo.blockNumber?.toLocaleString("en-US") ?? 0
+                : "--"}
             </Box>
           </Box>
           <Box className={styles.footerSocialsContainer}>

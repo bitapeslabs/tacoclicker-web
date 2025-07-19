@@ -535,13 +535,18 @@ export const globalTheme: MantineThemeOverride = createTheme({
       }),
     }),
     SegmentedControl: SegmentedControl.extend({
+      classNames: {
+        indicator: "mantine-segmented-control-indicator",
+      },
       styles: (theme) => ({
         root: {
           backgroundColor: "var(--custom-dimmed-0)",
           height: "fit-content",
           borderColor: "var(--custom-dimmed-1)",
-          borderRadius: theme.radius.md,
+          borderRadius: "20px",
           borderWidth: "1px",
+          width: "100%",
+          fontFamily: "var(--font-red-hat-display)",
           borderStyle: "solid",
         },
         control: {
@@ -549,6 +554,7 @@ export const globalTheme: MantineThemeOverride = createTheme({
         },
 
         indicator: {
+          borderRadius: "17px",
           backgroundColor: "#fff",
           color: "var(--custom-dimmed-0) !important",
         },

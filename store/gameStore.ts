@@ -2,6 +2,7 @@
 import { create } from "zustand";
 import { xxHash64FromString } from "@/lib/crypto/xxhash";
 import { ITERATIONS_NEEDED_FOR_PROOF_OF_CLICK } from "@/lib/consts";
+import { ISchemaAlkaneId } from "alkanesjs";
 
 export type IProofOfClickState = {
   //A recent block hash is used to get a new seed
@@ -22,6 +23,7 @@ export type ITacoBlock = {
 
 interface GameStore {
   latency: number;
+  taqueriaAlkaneId: ISchemaAlkaneId;
   proofOfClickState: IProofOfClickState;
   userTortillasPerBlock: number;
   totalTortillasPerBlock: number;
@@ -31,6 +33,7 @@ interface GameStore {
   setProofOfClickState: (p?: Partial<IProofOfClickState>) => void;
   doProofOfClickHash: () => void;
   addNewRecentBlock: (block: ITacoBlock) => void;
+  setTaqueriaAlkaneId: (alkaneId: ISchemaAlkaneId) => void;
 
   setUserTortillasPerBlock: (tortillas: number) => void;
   setTotalTortillasPerBlock: (tortillas: number) => void;
@@ -48,8 +51,16 @@ export const useGameStore = create<GameStore>()((set) => ({
   userTortillasPerBlock: 0,
   totalTortillasPerBlock: 0,
   unclaimedTortillas: 0,
+  taqueriaAlkaneId: {
+    block: 0,
+    tx: 0n,
+  },
   latency: 0,
   recentBlocks: [],
+  setTaqueriaAlkaneId: (alkaneId) =>
+    set((state) => ({
+      taqueriaAlkaneId: alkaneId,
+    })),
   setLatency: (latency) =>
     set((state) => ({
       latency,

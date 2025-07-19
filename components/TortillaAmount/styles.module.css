@@ -1,0 +1,25 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.iconWrapper {
+  transform: rotate(-10deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text {
+  font-weight: 700;
+  font-size: 2rem;
+  font-family: inherit;
+  color: white;
+}
+
+.decimal {
+  font-weight: 600;
+  color: var(--custom-disabled);
+  font-size: 1.25rem;
+}

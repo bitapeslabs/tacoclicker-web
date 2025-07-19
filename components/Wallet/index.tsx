@@ -12,13 +12,11 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import { useLaserEyes, WalletIcon } from "@omnisat/lasereyes";
-import { WALLETS } from "@/lib/consts";
-import { capitalize } from "@/lib/utils";
-import styles from "./styles.module.css";
+import { capitalize, clickHandler } from "@/lib/utils";
 import { IconWallet } from "@tabler/icons-react";
 import { playClickBackSound, playClickSound } from "@/lib/sounds";
+import { useModalsStore, modals } from "@/store/modalStore";
 
 /* -------------------------------- helpers ------------------------------- */
 function shorten(addr: string) {
@@ -27,31 +25,12 @@ function shorten(addr: string) {
 /* ----------------------------------------------------------------------- */
 
 export default function WalletButton() {
-  /* ---------------- laser-eyes wallet state ---------------- */
-  const { connect, disconnect, address } = useLaserEyes(); // adjust if API differs
+  const { disconnect, address } = useLaserEyes(); // adjust if API differs
   const isConnected = !!address;
-  /* --------------------------------------------------------- */
-
-  /* ---------------- disclosure for the connect modal ------- */
-  const [modalOpened, modalHandlers] = useDisclosure(false);
-  /* --------------------------------------------------------- */
-
-  /* ---------------- connect logic -------------------------- */
-  const timer = useRef<NodeJS.Timeout | null>(null); // keep the timer if you need it
-  async function handleConnect(provider: (typeof WALLETS)[number]) {
-    playClickSound();
-    try {
-      let shouldClose = true;
-      await connect(provider).catch((e) => (shouldClose = false));
-      if (shouldClose) modalHandlers.close();
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  const { openModals } = useModalsStore();
 
   return (
     <>
-      {/* ------------------ main button / menu ------------------ */}
       {isConnected ? (
         <Menu width={220} shadow="md">
           <Menu.Target>
@@ -78,47 +57,11 @@ export default function WalletButton() {
         </Menu>
       ) : (
         <Button
-          onClick={() => {
-            playClickSound();
-            modalHandlers.open();
-          }}
+          onClick={clickHandler(() => openModals([modals.WalletConnect()]))}
         >
           Connect Wallet
         </Button>
       )}
-
-      {/* ------------------ connect modal ------------------ */}
-      <Modal
-        opened={modalOpened}
-        onClose={modalHandlers.close}
-        title="Connect Wallet"
-        classNames={{ title: styles.modalTitle }}
-        centered
-      >
-        <Stack className={styles.modalStack}>
-          {WALLETS.map((wallet) => (
-            <Button
-              key={wallet}
-              className={styles.modalButton}
-              classNames={{ inner: styles.modalButtonInner }}
-              variant="white"
-              size="md"
-              onClick={() => handleConnect(wallet)}
-            >
-              <Box className={styles.modalButtonGroup}>
-                <WalletIcon
-                  walletName={wallet}
-                  size={48}
-                  className={styles.modalButtonWalletIcon}
-                />
-                <Text className={styles.modalButtonWalletText}>
-                  {capitalize(wallet)}
-                </Text>
-              </Box>
-            </Button>
-          ))}
-        </Stack>
-      </Modal>
     </>
   );
 }

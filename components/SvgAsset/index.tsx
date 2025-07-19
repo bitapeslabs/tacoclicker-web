@@ -1,12 +1,6 @@
 "use client";
 import type { ReactElement, SVGProps } from "react";
-
-export type ISvgAssetProps = {
-  size?: number;
-  fill?: string;
-  strokeFill?: string;
-} & SVGProps<SVGSVGElement>;
-
+import { ISvgAssetProps } from "./types";
 export const SvgTacoClickerLogo = ({
   size = 512,
   fill = "#000",
@@ -349,3 +343,78 @@ export const SvgTortillas = ({
     </g>
   </svg>
 );
+
+export const SvgCheckMark = ({
+  size = 512,
+  fill,
+  ...props
+}: ISvgAssetProps): ReactElement => (
+  <svg
+    fill={fill ?? "#000"}
+    version="1.1"
+    id="Capa_1"
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 40 40"
+  >
+    <g>
+      <path
+        d="M20,0C8.974,0,0,8.973,0,20c0,11.027,8.974,20,20,20c11.029,0,20-8.973,20-20C40,8.973,31.029,0,20,0z M28.818,17.875
+		l-8.562,8.564c-0.596,0.595-1.377,0.893-2.158,0.893c-0.779,0-1.561-0.298-2.156-0.893l-4.758-4.758
+		c-1.191-1.191-1.191-3.124,0-4.313c1.191-1.192,3.121-1.192,4.314,0l2.6,2.6l6.408-6.407c1.188-1.189,3.123-1.189,4.312,0
+		C30.01,14.752,30.01,16.684,28.818,17.875z"
+      />
+    </g>
+  </svg>
+);
+
+export const SvgIconBag = ({
+  size = 512,
+  fill,
+  ...props
+}: ISvgAssetProps): ReactElement => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 135.467 135.467"
+    {...props}
+  >
+    <path
+      d="M858.561 2166.788c4.42-22.219 32.267-28.68 29.293 6.814"
+      style={{
+        opacity: 1,
+        fill: "none",
+        fillOpacity: 1,
+        stroke: "#f9f9f9",
+        strokeWidth: 6.2,
+        strokeDasharray: "none",
+        strokeOpacity: 1,
+      }}
+      transform="matrix(-1.25754 0 0 1.25754 1162.662 -2687.781)"
+    />
+    <path
+      d="m854.088 2164.896 45.069 9.475c3.71.78 4.627 3.238 4.381 5.23l-6.423 51.985c-.408 3.302-4.254 3.603-7.903 2.825l-50.087-10.67c-1.796-.383-2.67-2.933-1.812-6.395l12.305-49.603c.596-2.402 2.923-3.171 4.47-2.847z"
+      style={{
+        fill: "#f7b659",
+        fillOpacity: 1,
+        stroke: "#aa7205",
+        strokeWidth: 0,
+      }}
+      transform="matrix(-1.25754 0 0 1.25754 1162.662 -2687.781)"
+    />
+    <path
+      d="m1310.178 1894.576 46.453-1.94c3.792-.159 3.25 1.22 3.324 3.224l2.02 54.048c.04 1.098-.276 3.57-1.998 3.629l-51.213 1.767c-1.837.063-3.26-2.2-3.198-5.767l.892-51.116c.043-2.475 2.139-3.785 3.72-3.845z"
+      style={{
+        opacity: 1,
+        fill: "#fad49c",
+        stroke: "#aa7205",
+        strokeWidth: 0,
+      }}
+      transform="matrix(-1.22017 .3043 .28144 1.22564 1162.662 -2687.781)"
+    />
+  </svg>
+);
+
+export * from "./logos";

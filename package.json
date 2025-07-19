@@ -13,12 +13,16 @@
     "@mantine/hooks": "^8.1.1",
     "@noble/secp256k1": "1.6.3",
     "@omnisat/lasereyes": "^0.0.156",
+    "@tabler/icons-react": "^3.34.0",
     "@tanstack/react-query": "^5.80.10",
+    "alkanesjs": "^1.0.9",
     "bitcoinjs-lib": "^6.1.7",
+    "borsher": "^4.0.0",
     "clsx": "^2.1.1",
     "create-hash": "^1.2.0",
     "create-hmac": "^1.1.7",
     "framer-motion": "^12.18.1",
+    "net": "^1.0.2",
     "next": "^15.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -35,6 +39,7 @@
     "@types/xxhashjs": "^0.2.4",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
+    "postcss-preset-mantine": "^1.18.0",
     "typescript": "^5"
   }
 }

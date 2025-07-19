@@ -27,8 +27,8 @@ const lilitaOne = Lilita_One({
 const queryClient = new QueryClient();
 
 export const metadata: Metadata = {
-  title: "Mezcal",
-  description: "A better Runes for Bitcoin",
+  title: "Taco Clicker",
+  description: "A tasty experiment on Alkanes",
 };
 
 export default function RootLayout({
@@ -44,15 +44,14 @@ export default function RootLayout({
         className={`${redHatSans.variable} ${redHatMono.variable} ${lilitaOne.variable}`}
       >
         <ColorSchemeScript forceColorScheme="dark" />
-        <Providers>
-          <MantineProvider
-            theme={globalTheme}
-            cssVariablesResolver={globalCSSVariablesResolver}
-            forceColorScheme="dark"
-          >
-            {children}
-          </MantineProvider>
-        </Providers>
+
+        <MantineProvider
+          theme={globalTheme}
+          cssVariablesResolver={globalCSSVariablesResolver}
+          forceColorScheme="dark"
+        >
+          <Providers>{children}</Providers>
+        </MantineProvider>
       </body>
     </html>
   );

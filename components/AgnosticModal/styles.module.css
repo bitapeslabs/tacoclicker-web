@@ -1,0 +1,21 @@
+.modalTitle {
+  font-size: var(--mantine-font-size-xl);
+  font-weight: 900;
+}
+
+/* generic content wrapper – override as needed */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* optional primary button style matching your previous modals */
+.primaryButton {
+  --button-padding-x: 10px !important;
+  background-color: var(--custom-dimmed-1);
+  color: #fff !important;
+}
+.primaryButton:hover {
+  background-color: var(--custom-dimmed-2);
+}
