@@ -37,7 +37,6 @@ import { DecodableAlkanesResponse } from "alkanesjs";
 import { schemaMerkleLeaf } from "@/lib/contracts/tacoclicker/schemas";
 import { usePersistStore } from "@/store/persistStore";
 import { IconArrowUpRight } from "@tabler/icons-react";
-
 const steps: Step[] = [
   {
     label: "Connect Wallet",
@@ -164,7 +163,7 @@ function AirdropStepAllocationCheck({
   const [claimableTortillas, setClaimableTortillas] = useState(0);
   const { tacoClickerContract } = useContractStore();
   const { setAirdropClaimTxid } = usePersistStore();
-
+  const { openModals } = useModalsStore();
   const claimAirdrop = async () => {
     if (!tacoClickerContract || !address) {
       return;
@@ -224,6 +223,12 @@ function AirdropStepAllocationCheck({
       } catch (error) {
         setClaimableTortillas(0);
         console.log("Error fetching claimable tortillas:", error);
+        openModals([
+          modals.ErrorTxModal({
+            content:
+              "Error fetching claimable tortillas. Please try again later.",
+          }),
+        ]);
       }
       setLoading(false);
     }
