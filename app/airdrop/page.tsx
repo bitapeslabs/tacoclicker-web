@@ -135,6 +135,7 @@ function AirdropStepInitial() {
           </Box>
           <Box className={styles.communityName}>Methane</Box>
         </Box>
+        <Title className={styles.airdropActionsTitle2}>and 5 others</Title>
       </Box>
       <Box className={styles.airdropDescription}>
         These communities were selected for their immense contributions in
@@ -337,7 +338,7 @@ export default function AirdropPage() {
                 We have a DELICIOUS airdrop waiting for you!
               </Title>
               <Box className={styles.airdropDescription}>
-                {`We have earmarked 10.8M TORTILLA to over 17k> different holders of various communities.
+                {`We have earmarked 10.8M TORTILLA to over 1.08M> different holders of various communities.
 If you find yourself here, you are participating in the first merkle distribution
 airdrop in Bitcoin history`}
               </Box>

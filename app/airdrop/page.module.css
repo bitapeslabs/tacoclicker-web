@@ -56,6 +56,17 @@
   letter-spacing: 1px;
 }
 
+.airdropActionsTitle2 {
+  width: 100px;
+  color: #fff;
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+  line-height: 1.2;
+  letter-spacing: 1px;
+}
+
 .airdropDescription {
   color: var(--custom-disabled);
   font-family: "Red Hat Display", sans-serif;
