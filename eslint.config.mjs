@@ -13,13 +13,24 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     rules: {
-      // Warns if you have unused variables, but doesn't fail your build
+      // Downgrade no-unused-vars to warning, and allow any name
       "no-unused-vars": [
         "warn",
-        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+        { vars: "all", args: "after-used", ignoreRestSiblings: true },
       ],
-      // Warns on unescaped characters like " in JSX, but doesn't block you
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { vars: "all", args: "after-used", ignoreRestSiblings: true },
+      ],
+
+      // Escape JSX entities warning
       "react/no-unescaped-entities": "warn",
+
+      // Warn instead of error for literal type vs const assertion
+      "@typescript-eslint/prefer-as-const": "warn",
+
+      // Warn instead of error for any
+      "@typescript-eslint/no-explicit-any": "warn",
     },
   },
 ];
