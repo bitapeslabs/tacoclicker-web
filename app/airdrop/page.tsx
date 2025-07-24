@@ -184,6 +184,13 @@ function AirdropStepAllocationCheck({
       console.log("Airdrop txid to claim executed successfully:", response);
     } catch (error) {
       console.log("Error claiming airdrop:", error);
+      openModals([
+        modals.ErrorTxModal({
+          content:
+            "Error claiming airdrop: " +
+            (error instanceof Error ? error.message : "Unknown error"),
+        }),
+      ]);
       setIsClaiming(false);
       return;
     }
