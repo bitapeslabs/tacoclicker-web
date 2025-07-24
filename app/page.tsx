@@ -36,7 +36,7 @@ import MusicPlayer from "@/components/MusicPlayer";
 import { SingularAlkanesTransfer, ParsableAlkaneId } from "alkanesjs";
 import { z } from "zod";
 import { useActivityStore } from "@/store/activityStore";
-export const amountSchema = z
+const amountSchema = z
   .number({
     invalid_type_error: "Value must be a number",
     required_error: "Value is required",
@@ -61,7 +61,7 @@ export const amountSchema = z
   );
 const SCALE_8 = 100_000_000n;
 
-export const toBigIntFixed8 = (v: number | string): bigint => {
+const toBigIntFixed8 = (v: number | string): bigint => {
   const s = String(v);
   if (!/^\d+(\.\d{0,8})?$/.test(s))
     throw new Error("max 8 decimals & positive only");
@@ -70,7 +70,7 @@ export const toBigIntFixed8 = (v: number | string): bigint => {
   return BigInt(i) * SCALE_8 + BigInt((f + "00000000").slice(0, 8));
 };
 
-export function ClickerGameView() {
+function ClickerGameView() {
   const { proofOfClickState } = useGameStore();
 
   const [isLoadingClaimButton, setIsLoadingClaimButton] = useState(false);
@@ -330,7 +330,7 @@ const steps: Step[] = [
   },
 ];
 
-export function RegistrationView() {
+function RegistrationView() {
   const { address, connected } = useLaserEyes();
   const { tacoClickerContract } = useContractStore();
   const { openModals } = useModalsStore();
