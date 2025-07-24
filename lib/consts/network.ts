@@ -42,7 +42,7 @@ export const tacoClickerAlkaneId: AlkaneId = {
 
 export const tortillaAlkaneId: AlkaneId = {
   block: 2n,
-  tx: 62082n,
+  tx: 62083n,
 };
 
 export const NETWORK_NAME = "mainnet";
