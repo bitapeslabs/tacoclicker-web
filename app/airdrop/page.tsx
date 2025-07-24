@@ -165,6 +165,7 @@ function AirdropStepAllocationCheck({
   const { tacoClickerContract } = useContractStore();
   const { setAirdropClaimTxid } = usePersistStore();
   const { openModals } = useModalsStore();
+  const { feeRate } = useGameStore();
   const claimAirdrop = async () => {
     if (!tacoClickerContract || !address) {
       return;
@@ -178,7 +179,9 @@ function AirdropStepAllocationCheck({
     setIsClaiming(true);
     try {
       let response = consumeOrThrow(
-        await tacoClickerContract.claimAirdrop(address, merkleProof)
+        await tacoClickerContract.claimAirdrop(address, merkleProof, {
+          feeRate,
+        })
       );
       setAirdropClaimTxid(response.txid);
       console.log("Airdrop txid to claim executed successfully:", response);

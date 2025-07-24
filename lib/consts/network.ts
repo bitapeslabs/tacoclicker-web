@@ -27,7 +27,7 @@ export const PROVIDER = new Provider({
   electrumApiUrl: "https://tacoclicker.com/api/esplora",
   network: bitcoin.networks.bitcoin,
   explorerUrl: "https://mempool.space",
-  defaultFeeRate: 25,
+  defaultFeeRate: 3,
 });
 
 export const AUDIO_PROVIDER = "https://tacoclicker.com/audio";
