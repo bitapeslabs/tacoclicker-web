@@ -19,7 +19,7 @@ export const ITERATIONS_NEEDED_FOR_PROOF_OF_CLICK = 300;
 export const GITHUB_URL = "https://github.com/bitapeslabs/tacoclicker-rs";
 export const TELEGRAM_URL = "https://t.me/tacoclicker";
 export const X_URL = "https://x.com/tacoclickerbtc";
-export const WALLETS: ProviderType[] = [UNISAT, XVERSE, OKX, OYL];
+export const WALLETS: ProviderType[] = [UNISAT, OYL];
 export const WALLET_NETWORK = MAINNET;
 //https://signet.sandshrew.io/v1/94a9ab1efa54e81946d20959f774987b"
 export const PROVIDER = new Provider({

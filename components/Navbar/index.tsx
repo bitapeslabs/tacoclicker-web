@@ -34,7 +34,6 @@ import WalletButton from "@/components/Wallet";
 const links = [
   { label: "game", to: "/", target: "_self" },
   { label: "airdrop", to: "/airdrop", target: "_self" },
-  { label: "how to play", to: "/how-to-play", target: "_self" },
 ] as const;
 
 type IAvailableLabels = (typeof links)[number]["label"];
