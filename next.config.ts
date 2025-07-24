@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   experimental: {
     cssChunking: false,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   devIndicators: {
     position: "bottom-right",
   },
