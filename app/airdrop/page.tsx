@@ -226,7 +226,8 @@ function AirdropStepAllocationCheck({
         openModals([
           modals.ErrorTxModal({
             content:
-              "Error fetching claimable tortillas. Please try again later.",
+              "Error claiming airdrop: " +
+              (error instanceof Error ? error.message : "Unknown error"),
           }),
         ]);
       }
