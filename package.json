@@ -1,6 +1,6 @@
 {
   "name": "tacoclicker",
-  "version": "0.1.0",
+  "version": "0.1.",
   "private": true,
   "scripts": {
     "dev": "next dev -H 0.0.0.0 -p 3000",
@@ -16,7 +16,7 @@
     "@omnisat/lasereyes": "^0.0.156",
     "@tabler/icons-react": "^3.34.0",
     "@tanstack/react-query": "^5.80.10",
-    "alkanesjs": "^1.1.2",
+    "alkanesjs": "^1.1.3",
     "bitcoinjs-lib": "^6.1.7",
     "borsher": "^4.0.0",
     "clsx": "^2.1.1",
