@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   ActionIcon,
   Box,
@@ -20,12 +20,16 @@ import styles from "./styles.module.css";
 import { IconWallet } from "@tabler/icons-react";
 import { playClickBackSound, playClickSound } from "@/lib/sounds";
 import { IAgnosticModalChildProps } from "../../types";
-
+import { mezcalrpc_getmezcalbalances } from "@/lib/apis/mezcal";
+import { consumeOrThrow } from "@/lib/boxed";
+import { useModalsStore, modals } from "@/store/modalStore";
 export function WalletConnectModal({
   isOpen,
   close,
 }: IAgnosticModalChildProps) {
   const { connect, disconnect, address } = useLaserEyes();
+
+  const { openModals } = useModalsStore();
 
   async function handleConnect(provider: (typeof WALLETS)[number]) {
     playClickSound();
@@ -37,6 +41,25 @@ export function WalletConnectModal({
       console.log(err);
     }
   }
+  useEffect(() => {
+    async function checkForMezcalAssets() {
+      if (!address) return;
+      const balances = consumeOrThrow(
+        await mezcalrpc_getmezcalbalances(address, 1, 10)
+      );
+      if (Object.keys(balances?.balances ?? {}).length > 0) {
+        openModals([
+          modals.ErrorTxModal({
+            content:
+              "You have Mezcal assets. Please move them OUT of this wallet to use taco clicker with that wallet.",
+          }),
+        ]);
+        disconnect();
+      }
+    }
+
+    checkForMezcalAssets();
+  }, [address]);
 
   return (
     <>

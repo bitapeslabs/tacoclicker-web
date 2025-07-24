@@ -172,7 +172,7 @@ const MERKLE_TREE_GITHUB_URL =
   "https://raw.githubusercontent.com/bitapeslabs/tacoclicker-airdrop/refs/heads/main";
 
 async function getMerkleTree(
-  slug: "mainnet" | "regtest" | "signet"
+  slug: "mainnet" | "signet"
 ): Promise<BoxedResponse<IMerkleTree, FetchError>> {
   try {
     const url = `${MERKLE_TREE_GITHUB_URL}/tortilla-airdrop-${slug}.json`;
@@ -218,29 +218,59 @@ const MerkleDistributorABI = TokenABI.extend({
       slug?: "mainnet" | "regtest" | "signet";
     }
   ) {
-    try {
-      let merkleTree = consumeOrThrow(
-        await getMerkleTree(params.slug ?? "regtest")
-      );
+    // -----------------------------
+    //  CONFIG
+    // -----------------------------
+    const API_HOSTS: Record<"mainnet" | "regtest" | "signet", string> = {
+      mainnet: "https://tacoclicker.com/api/merkdrop",
+      regtest: "https://signet.mezcal.sh/merkdrop",
+      signet: "https://signet.mezcal.sh/merkdrop",
+    };
 
-      if (!merkleTree[params.address]) {
+    const base = API_HOSTS[params.slug ?? "regtest"];
+    const url = `${base}/leaf/${params.address}`;
+
+    // -----------------------------
+    //  HELPERS
+    // -----------------------------
+    const strip0x = (h: string) => (h.startsWith("0x") ? h.slice(2) : h);
+    const hexToBytes = (hex: string) =>
+      Array.from(Buffer.from(strip0x(hex), "hex"));
+
+    try {
+      // optional timeout to avoid hanging forever
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10_000);
+
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeout);
+
+      if (res.status === 404) {
         return new BoxedError(
           AlkanesSimulationError.UnknownError,
           `No Merkle proof found for address ${params.address}`
         );
       }
+      if (!res.ok) {
+        const txt = await res.text().catch(() => "");
+        return new BoxedError(
+          AlkanesSimulationError.UnknownError,
+          `API error (${res.status}): ${txt || "unknown"}`
+        );
+      }
 
-      const { leaf, proofs } = merkleTree[params.address];
+      const data: { leaf: string; proofs: string[] } = await res.json();
+
       const proof: IMerkleProof = {
-        leaf: Array.from(Buffer.from(strip0x(leaf), "hex")),
-        proofs: proofs.map((p) => Array.from(Buffer.from(strip0x(p), "hex"))),
+        leaf: hexToBytes(data.leaf),
+        proofs: data.proofs.map(hexToBytes),
       };
 
       return new BoxedSuccess(proof);
     } catch (e) {
       return new BoxedError(
         AlkanesSimulationError.UnknownError,
-        `Failed to fetch Merkle tree: ${
+        `Failed to fetch Merkle proof: ${
           e instanceof Error ? e.message : String(e)
         }`
       );
@@ -364,7 +394,7 @@ export class TacoClickerContract extends abi.attach(
   TacoClickerABI
 ) {
   public static readonly FUNDING_ADDRESS =
-    "tb1qlsqdxeasvpe2ak8yj3uvrtmjp2j3u22j5yp4gf";
+    "bc1qe2734hgzqxncast898vzz2p4dun2d2q747a52y";
 
   public static readonly TAQUERIA_COST_SATS = 21_000n;
 

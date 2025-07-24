@@ -1,5 +1,15 @@
 "use client";
-import { Box, Burger, Drawer, Group, Stack, Title, Text } from "@mantine/core";
+import {
+  Box,
+  Burger,
+  Drawer,
+  Group,
+  Stack,
+  Title,
+  Text,
+  Slider,
+  TextInput,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import clsx from "clsx";
 import Link from "next/link";
@@ -54,6 +64,8 @@ type INavbarProps = {
 export default function Navbar({ selected, excludeFooter }: INavbarProps) {
   const [opened, { toggle, close }] = useDisclosure(false);
   const { recentBlocks, latency } = useGameStore();
+
+  const { feeRate, setFeeRate } = useGameStore();
 
   const blockInfo = recentBlocks[0] ?? { blockNumber: 0 };
   return (
@@ -143,6 +155,27 @@ export default function Navbar({ selected, excludeFooter }: INavbarProps) {
                 ? blockInfo.blockNumber?.toLocaleString("en-US") ?? 0
                 : "--"}
             </Box>
+          </Box>
+          <Box className={styles.footerHeaderContainer}>
+            <Box className={styles.footerHeaderText}>
+              Sats V/BYTE:&nbsp;&nbsp;
+            </Box>
+            <TextInput
+              size="xs"
+              value={feeRate.toString()}
+              onChange={(e) => {
+                const value = parseInt(e.currentTarget.value, 10);
+                if (!isNaN(value)) {
+                  setFeeRate(value);
+                }
+              }}
+              classNames={{
+                label: styles.clickerFooterInputLabel,
+                root: styles.clickerFooterInputWrapper,
+                wrapper: styles.clickerFooterInputWrapper,
+                input: styles.clickerFooterInput,
+              }}
+            />
           </Box>
           <Box className={styles.footerSocialsContainer}>
             <Box className={styles.footerHeaderContainer}>

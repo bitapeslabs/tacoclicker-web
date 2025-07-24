@@ -75,6 +75,7 @@ export function ClickerGameView() {
 
   const [isLoadingClaimButton, setIsLoadingClaimButton] = useState(false);
   const { address } = useLaserEyes();
+  const { feeRate } = useGameStore();
   const { tortillasPerBlock, unclaimedTortillas, taqueriaAlkaneIds } =
     useUserGameStore();
   const { tacoClickerContract } = useContractStore();
@@ -104,6 +105,7 @@ export function ClickerGameView() {
       setIsLoadingClaimButton(true);
       let { txid } = consumeOrThrow(
         await tacoClickerContract.claimTortilla(address, {
+          feeRate,
           transfers: [
             {
               address,
@@ -164,6 +166,7 @@ export function ClickerGameView() {
           },
 
           {
+            feeRate,
             transfers: [
               {
                 address,
@@ -343,6 +346,8 @@ export function RegistrationView() {
     address ? !!s.loadingFlags[address] : false
   );
 
+  const { feeRate } = useGameStore();
+
   const setRegistrationTxid = useUserGameStore((s) => s.setRegistrationTxid);
 
   // (Optional) debug:
@@ -373,6 +378,7 @@ export function RegistrationView() {
     try {
       const response = consumeOrThrow(
         await tacoClickerContract.register(address, {
+          feeRate,
           transfers: [
             {
               address: TacoClickerContract.FUNDING_ADDRESS,

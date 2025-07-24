@@ -27,12 +27,13 @@ interface GameStore {
   userTortillasPerBlock: number;
   totalTortillasPerBlock: number;
   unclaimedTortillas: number;
+  feeRate: number; // in sat/vbyte, used for transactions
   recentBlocks: ITacoBlock[];
   setLatency: (latency: number) => void;
   setProofOfClickState: (p?: IProofOfClickState) => void;
   addNewRecentBlock: (block: ITacoBlock) => void;
   setTaqueriaAlkaneId: (alkaneId: ISchemaAlkaneId) => void;
-
+  setFeeRate: (feeRate: number) => void;
   setUserTortillasPerBlock: (tortillas: number) => void;
   setTotalTortillasPerBlock: (tortillas: number) => void;
   setUnclaimedTortillas: (tortillas: number) => void;
@@ -43,6 +44,7 @@ export const useGameStore = create<GameStore>()((set) => ({
   userTortillasPerBlock: 0,
   totalTortillasPerBlock: 0,
   unclaimedTortillas: 0,
+  feeRate: 5,
   taqueriaAlkaneId: {
     block: 0,
     tx: 0n,
@@ -56,6 +58,10 @@ export const useGameStore = create<GameStore>()((set) => ({
   setLatency: (latency) =>
     set((state) => ({
       latency,
+    })),
+  setFeeRate: (feeRate) =>
+    set((state) => ({
+      feeRate,
     })),
   setProofOfClickState: (p) =>
     set((state) => ({

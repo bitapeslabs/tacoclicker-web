@@ -24,6 +24,35 @@
   margin-top: 10px;
   background-color: var(--custom-dimmed-0);
 }
+.clickerFooterInputWrapper {
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.clickerFooterInputLabel {
+  text-align: left !important;
+  width: 100% !important;
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 900;
+  color: var(--custom-disabled) !important;
+  font-size: var(--mantine-font-size-sm);
+}
+
+.clickerFooterInput {
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 900;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  outline: none !important;
+  color: #fff !important;
+  font-size: 14px !important;
+}
+.clickerFooterInput:focus {
+  border-color: var(--custom-disabled) !important;
+}
 
 .linksGroup {
   align-items: center;

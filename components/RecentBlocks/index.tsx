@@ -33,7 +33,7 @@ import { getMultiplierFromBlockHash } from "@/lib/crypto/taco";
 import { esplora_getblocks } from "@/lib/apis/esplora";
 import { isBoxedError } from "@/lib/boxed";
 
-export const SALSA_BLOCK_MODULO = 2;
+export const SALSA_BLOCK_MODULO = 144;
 
 const copyText = async (text: string) => {
   try {

@@ -141,6 +141,7 @@ export function GameToolbar() {
   const balance = balances[address] ?? 0;
 
   const isGameEnabled = taqueriaAlkaneId !== null;
+  const { feeRate } = useGameStore();
 
   /*─────────────────────────
    * Component state
@@ -257,6 +258,7 @@ export function GameToolbar() {
             upgrade: Object.keys(taqueriaUpgradeView ?? {}).indexOf(slug),
           },
           {
+            feeRate,
             transfers: [
               //auth alkane
               {
