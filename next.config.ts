@@ -3,7 +3,6 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   experimental: {
     cssChunking: false,
-    appDir: true, // optional but improves app directory behavior with ESM
   },
   eslint: {
     ignoreDuringBuilds: true,
