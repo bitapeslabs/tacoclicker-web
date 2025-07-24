@@ -11,6 +11,10 @@ import {
   IUserUpgradesView,
   ITortillaPerBlockRes,
   IUnclaimedRes,
+  IAvailableUpgrade,
+  IAvailableUpgrades,
+  IGlobalState,
+  ITaqueriaEmissionState,
 } from "@/lib/contracts/tacoclicker/schemas";
 import {
   BoxedResponse,
@@ -69,6 +73,8 @@ interface UserGameStore {
   loadingFlags: Record<string, boolean>;
   attemptedInitialFetch: Record<string, boolean>;
   contracts: ContractCache;
+  globalState: IGlobalState | null;
+  taqueriaEmissionStates: Record<string, ITaqueriaEmissionState | null>;
 
   /** In-flight guards per address (not persisted) */
   inFlightFetch: Record<string, boolean>;
@@ -78,14 +84,20 @@ interface UserGameStore {
   setRegistrationTxid: (addr: string, txid: string | null) => void;
   setTaqueriaAlkaneId: (addr: string, id: ISchemaAlkaneId | null) => void;
   setBalance: (addr: string, balance: number | null) => void;
-  setTaqueriaUpgradeView: (
+  setTaqueriaUpgradeViews: (
     addr: string,
     view: IUserUpgradesView | null
+  ) => void;
+
+  setTaqueriaEmissionStates: (
+    addr: string,
+    view: ITaqueriaEmissionState | null
   ) => void;
   setUnclaimedTortillas: (addr: string, v: number | null) => void;
   setTortillasPerBlock: (addr: string, v: number | null) => void;
   setContract: (addr: string, c: ControlledMintContract | null) => void;
   markAttemptedInitialFetch: (addr: string) => void;
+  setGlobalState: (view: IGlobalState | null) => void;
 
   /** Activity */
   addActivityEntry: (addr: string, entry: ActivityEntry) => void;
@@ -121,7 +133,7 @@ export const useUserGameStore = create<UserGameStore>()(
   persist(
     (set, get) => ({
       currentAddress: null,
-
+      globalState: null,
       registrationTxids: {},
       taqueriaAlkaneIds: {},
       activities: {},
@@ -131,8 +143,23 @@ export const useUserGameStore = create<UserGameStore>()(
       tortillasPerBlock: {},
       loadingFlags: {},
       attemptedInitialFetch: {},
+      taqueriaEmissionStates: {},
       contracts: {},
       inFlightFetch: {},
+      availableUpgrades: null,
+
+      setGlobalState: (view) =>
+        set((s) => {
+          return { globalState: view };
+        }),
+
+      setTaqueriaEmissionStates: (addr, view) =>
+        set((s) => {
+          const next = { ...s.taqueriaEmissionStates };
+          if (!view) delete next[addr];
+          else next[addr] = view;
+          return { taqueriaEmissionStates: next };
+        }),
 
       setCurrentAddress: (addr) => set({ currentAddress: addr }),
 
@@ -160,7 +187,7 @@ export const useUserGameStore = create<UserGameStore>()(
           return { balances: next };
         }),
 
-      setTaqueriaUpgradeView: (addr, view) =>
+      setTaqueriaUpgradeViews: (addr, view) =>
         set((s) => {
           const next = { ...s.taqueriaUpgradeViews };
           if (!view) delete next[addr];
@@ -293,7 +320,13 @@ export const useUserGameStore = create<UserGameStore>()(
           }
 
           // Parallel fetches
-          const [perBlockRaw, unclaimedRaw, upgradesRaw] = consumeAll(
+          const [
+            perBlockRaw,
+            unclaimedRaw,
+            upgradesRaw,
+            globalState,
+            taqueriaEmissionState,
+          ] = consumeAll(
             await Promise.all([
               fetchPerBlock
                 ? tacoClickerContract.getTortillaPerBlockForTaqueria({
@@ -310,6 +343,10 @@ export const useUserGameStore = create<UserGameStore>()(
                     taqueria: currentId,
                   })
                 : new BoxedSuccess(null),
+              tacoClickerContract.getGlobalCompleteState(),
+              tacoClickerContract.getTaqueriaEmissionState({
+                taqueria: currentId,
+              }),
             ] as const)
           );
 
@@ -332,10 +369,20 @@ export const useUserGameStore = create<UserGameStore>()(
           }
 
           if (upgradesRaw) {
-            get().setTaqueriaUpgradeView(address, upgradesRaw);
+            get().setTaqueriaUpgradeViews(address, upgradesRaw);
+          }
+
+          if (taqueriaEmissionState) {
+            get().setTaqueriaEmissionStates(address, taqueriaEmissionState);
+          }
+
+          if (globalState) {
+            get().setGlobalState(globalState);
           }
 
           get().markAttemptedInitialFetch(address);
+        } catch (err) {
+          console.log("Error in ensureTaqueriaReady:", err);
         } finally {
           set((s) => {
             const nextIF = { ...s.inFlightFetch };
@@ -362,7 +409,14 @@ export const useUserGameStore = create<UserGameStore>()(
           inFlightFetch: { ...s.inFlightFetch, [address]: true },
         }));
         try {
-          const [perBlockRes, unclaimedRes, tortillaBalance] = consumeAll(
+          const [
+            perBlockRes,
+            unclaimedRes,
+            tortillaBalance,
+            upgrades,
+            globalState,
+            taqueriaEmissionState,
+          ] = consumeAll(
             await Promise.all([
               tacoClicker.getTortillaPerBlockForTaqueria({
                 taqueria: id,
@@ -370,7 +424,21 @@ export const useUserGameStore = create<UserGameStore>()(
               tacoClicker.getUnclaimedTortillaForTaqueria({
                 taqueria: id,
               }),
-              tortillaContract.getBalance(address),
+              tortillaContract
+                .getBalance(address)
+                .catch(
+                  () =>
+                    new Promise((resolve) =>
+                      resolve(new BoxedSuccess(0))
+                    ) as unknown as Promise<BoxedResponse<number, string>>
+                ), // fallback to 0 if error
+              tacoClicker.getUpgradesForTaqueria({
+                taqueria: id,
+              }),
+              tacoClicker.getGlobalCompleteState(),
+              tacoClicker.getTaqueriaEmissionState({
+                taqueria: id,
+              }),
             ] as const)
           );
 
@@ -381,6 +449,10 @@ export const useUserGameStore = create<UserGameStore>()(
             ).decodeTo("tokenValue")
           );
 
+          get().setTaqueriaEmissionStates(address, taqueriaEmissionState);
+
+          get().setTaqueriaUpgradeViews(address, upgrades);
+
           console.log(unclaimedRes);
 
           const unclaimed = new DecodableAlkanesResponse(
@@ -388,6 +460,9 @@ export const useUserGameStore = create<UserGameStore>()(
           ).decodeTo("tokenValue");
           get().setUnclaimedTortillas(address, unclaimed);
           get().setBalance(address, tortillaBalance);
+          get().setGlobalState(globalState);
+        } catch (err) {
+          console.log("Error in refreshForAddressOnNewBlock:", err);
         } finally {
           set((s) => {
             const nextIF = { ...s.inFlightFetch };

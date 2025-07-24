@@ -10,18 +10,6 @@ export function TaqueriaAutoInit() {
   useSyncAddressesOnNewBlocks(tacoClickerContract, tortillaContract);
   const ensureTaqueriaReady = useUserGameStore((s) => s.ensureTaqueriaReady);
   const markAttempted = useUserGameStore((s) => s.markAttemptedInitialFetch);
-  const hasAttempted = useUserGameStore((s) =>
-    address ? s.hasAttemptedInitialFetch(address) : false
-  );
-  const isLoading = useUserGameStore((s) =>
-    address ? s.isLoading(address) : false
-  );
-  const regTxid = useUserGameStore((s) =>
-    address ? s.getRegistrationTxid(address) : null
-  );
-  const alkaneId = useUserGameStore((s) =>
-    address ? s.getTaqueriaAlkaneId(address) : null
-  );
 
   // Track currentAddress in store (optional convenience)
   const setCurrentAddress = useUserGameStore((s) => s.setCurrentAddress);
@@ -38,11 +26,6 @@ export function TaqueriaAutoInit() {
       () => markAttempted(address)
     );
   }, [address, tacoClickerContract, ensureTaqueriaReady, markAttempted]);
-
-  // Optional debug:
-  // useEffect(() => {
-  //   console.log("Taqueria state", { address, regTxid, alkaneId, isLoading, hasAttempted });
-  // }, [address, regTxid, alkaneId, isLoading, hasAttempted]);
 
   return null;
 }

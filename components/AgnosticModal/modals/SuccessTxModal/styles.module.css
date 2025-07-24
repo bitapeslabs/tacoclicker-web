@@ -1,0 +1,64 @@
+/* sign-tx-modal.module.css */
+.modalHeader {
+  padding-bottom: 6px !important;
+}
+
+.modalTitle {
+  height: 0px !important;
+}
+
+.iconCircle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-self: center;
+}
+
+.modalStack {
+  padding: 20px !important;
+  padding-top: 0px !important;
+  font-family: "Red Hat Display", sans-serif !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 20px !important;
+}
+
+.iconCircle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--custom-dimmed-1);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.leadText {
+  text-align: center;
+  font-size: 28px !important;
+  font-weight: 900 !important;
+}
+
+.statusRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.statusText {
+  font-size: var(--mantine-font-size-sm);
+  color: var(--mantine-color-dimmed);
+  font-weight: 600;
+}
+
+.tipText {
+  font-weight: 700 !important;
+  font-size: var(--mantine-font-size-sm);
+  color: var(--custom-disabled) !important;
+  text-align: center;
+  line-height: 1.4;
+}

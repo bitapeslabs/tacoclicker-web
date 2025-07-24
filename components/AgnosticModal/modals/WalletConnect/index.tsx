@@ -34,7 +34,7 @@ export function WalletConnectModal({
       await connect(provider).catch((e) => (shouldClose = false));
       if (shouldClose) close();
     } catch (err) {
-      console.error(err);
+      console.log(err);
     }
   }
 

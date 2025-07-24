@@ -11,8 +11,12 @@
 
 .radialBurstInner {
   animation: spin 60s linear infinite;
-  width: 5000px;
-  height: 5000px;
+  width: 200%;
+  height: 200%;
+  transform-origin: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @keyframes spin {

@@ -36,6 +36,10 @@
   color: #000 !important;
 }
 
+.salsaBlockText {
+  font-size: 12px;
+}
+
 .blockItemSalsaBlock .blockMultiplier {
   color: #000 !important;
 }

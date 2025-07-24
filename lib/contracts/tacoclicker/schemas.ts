@@ -3,13 +3,13 @@ import { BorshSchema, Infer as BorshInfer } from "borsher";
 
 export const schemaTacoClickerInitializeParams = BorshSchema.Struct({
   controlled_mint_factory: schemaAlkaneId,
-  merkle_root_id: BorshSchema.u8,
+  network_id: BorshSchema.u8,
 });
 
 export const schemaTacoClickerConsts = BorshSchema.Struct({
   controlled_mint_factory: schemaAlkaneId,
   tortilla_alkane_id: schemaAlkaneId,
-  merkle_root_id: BorshSchema.u8,
+  network_id: BorshSchema.u8,
   airdrop_height_end: BorshSchema.u64,
 });
 
@@ -102,6 +102,8 @@ export const schemaBetOnBlockReq = BorshSchema.Struct({
   target_multiplier: BorshSchema.u128,
 });
 export const schemaBetOnBlockRes = BorshSchema.Struct({
+  before_amount: BorshSchema.u128,
+  multiplier: BorshSchema.u128,
   won_amount: BorshSchema.u128,
   lost_amount: BorshSchema.u128,
 });
@@ -124,7 +126,8 @@ export const schemaGlobalEmissionState = BorshSchema.Struct({
 export const schemaGlobalEmissionState = BorshSchema.Struct({
   total_weight: BorshSchema.u128,
   acc_reward_per_weight: BorshSchema.u128,
-  last_updated_block: BorshSchema.u32,
+  last_updated_block: BorshSchema.u64,
+  genesis_block: BorshSchema.u64,
 });
 
 /*
@@ -138,9 +141,9 @@ pub struct SchemaGlobalSalsaState {
     */
 
 export const schemaGlobalSalsaState = BorshSchema.Struct({
-  current_block: BorshSchema.u128,
+  current_block: BorshSchema.u64,
   best_hash: BorshSchema.Vec(BorshSchema.u8),
-  best_hash_owner: BorshSchema.Vec(BorshSchema.u8),
+  best_hash_owner: BorshSchema.Option(schemaAlkaneId),
 });
 
 export const schemaGlobalState = BorshSchema.Struct({
@@ -161,3 +164,11 @@ export type IMerkleLeaf = BorshInfer<typeof schemaMerkleLeaf>;
 export type IMerkleProof = BorshInfer<typeof schemaMerkleProof>;
 
 export type IMerkleTree = Record<string, { leaf: string; proofs: string[] }>;
+
+export type IAvailableUpgrade = BorshInfer<typeof schemaUpgradesEntry>;
+export type IAvailableUpgrades = BorshInfer<typeof schemaUpgradesView>;
+export type IGlobalState = BorshInfer<typeof schemaGlobalState>;
+export type IGlobalConsts = BorshInfer<typeof schemaTacoClickerConsts>;
+export type ITaqueriaEmissionState = BorshInfer<
+  typeof schemaTaqueriaEmissionState
+>;

@@ -34,7 +34,7 @@ const getContractSignPsbt = (
       }
       return psbt.extractTransaction().toHex();
     } catch (error) {
-      console.error("Error signing PSBT:", error);
+      console.log("Error signing PSBT:", error);
       throw error;
     }
   };

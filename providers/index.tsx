@@ -7,15 +7,18 @@ import { WALLET_NETWORK } from "@/lib/consts";
 import { ModalsProvider } from "./modalsProvider";
 import { ContractProvider } from "./contractsProvider";
 import { TaqueriaAutoInit } from "./userGameDataProvider";
+import { AudioPlayerProvider } from "./audioProvider";
 const queryClient = new QueryClient();
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <LaserEyesProvider config={{ network: WALLET_NETWORK }}>
-        <ContractProvider>
-          <TaqueriaAutoInit />
-          {children}
-        </ContractProvider>
+        <AudioPlayerProvider>
+          <ContractProvider>
+            <TaqueriaAutoInit />
+            {children}
+          </ContractProvider>
+        </AudioPlayerProvider>
         <ModalsProvider />
       </LaserEyesProvider>
     </QueryClientProvider>

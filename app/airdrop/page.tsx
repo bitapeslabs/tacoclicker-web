@@ -243,9 +243,9 @@ function AirdropStepAllocationCheck({
       <Box className={styles.airdropActionsContainer}>
         <Title className={styles.airdropActionsTitle}>Good news!</Title>
         <Box className={styles.airdropDescription}>
-          Your address qualifies for the $TORTILLA airdrop! You are eligible to
-          receive. To claim please click the claim button below. You will be
-          prompted to sign TWO transactions.
+          Your address qualifies for the $TORTILLA airdrop! To claim please
+          click the claim button below. You will be prompted to sign TWO
+          transactions.
         </Box>
 
         <Box className={styles.boxedInfoContainer}>

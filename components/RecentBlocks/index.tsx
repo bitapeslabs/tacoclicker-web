@@ -123,10 +123,13 @@ function AllBlocksTable() {
 
   const blockRows = (blocksReady ? blocks.data : []).map((block) => {
     const multiplier = getMultiplierFromBlockHash(block.id);
-
+    const isSalsaBlock = block.height % SALSA_BLOCK_MODULO === 0;
     return (
       <Table.Tr key={block.id}>
-        <Table.Td>{block.height.toLocaleString("en-US")}</Table.Td>
+        <Table.Td>
+          {isSalsaBlock ? "🌶️ " : ""}
+          {block.height.toLocaleString("en-US")}
+        </Table.Td>
 
         <Table.Td
           className={styles.blockHashTd}
@@ -307,15 +310,16 @@ export function RecentBlocks() {
               layout
               className={clsx(
                 styles.blockItem,
-                block.multiplier > 2 && styles.blockItemBigReward,
-                isSalsaBlock && styles.blockItemSalsaBlock
+                block.multiplier > 2 && styles.blockItemBigReward
               )}
             >
               <Box className={styles.blockHeader}>
                 <IconBlocks size={18} />{" "}
                 {block.blockNumber.toLocaleString("en-US")}
                 <br />
-                {isSalsaBlock ? " (Salsa Block)" : ""}
+              </Box>
+              <Box className={styles.salsaBlockText}>
+                {isSalsaBlock ? " (🌶️ Salsa Block🌶️)" : ""}
               </Box>
 
               <Box

@@ -3,16 +3,15 @@ import { create } from "zustand";
 import { xxHash64FromString } from "@/lib/crypto/xxhash";
 import { ITERATIONS_NEEDED_FOR_PROOF_OF_CLICK } from "@/lib/consts";
 import { ISchemaAlkaneId } from "alkanesjs";
+import { ITaqueriaEmissionState } from "@/lib/contracts/tacoclicker/schemas";
 
 export type IProofOfClickState = {
   //A recent block hash is used to get a new seed
-  initialSeed: string;
-
-  //The current XXHash
-  currentHash: string;
-
-  //The amount of recursive hashes over the initial seed (300 is the one submitted to the contract)
-  iterations: number;
+  emissionState: ITaqueriaEmissionState;
+  currentHash: {
+    hash: string;
+    nonce: bigint;
+  } | null;
 };
 
 export type ITacoBlock = {
@@ -24,14 +23,13 @@ export type ITacoBlock = {
 interface GameStore {
   latency: number;
   taqueriaAlkaneId: ISchemaAlkaneId;
-  proofOfClickState: IProofOfClickState;
+  proofOfClickState: IProofOfClickState | null;
   userTortillasPerBlock: number;
   totalTortillasPerBlock: number;
   unclaimedTortillas: number;
   recentBlocks: ITacoBlock[];
   setLatency: (latency: number) => void;
-  setProofOfClickState: (p?: Partial<IProofOfClickState>) => void;
-  doProofOfClickHash: () => void;
+  setProofOfClickState: (p?: IProofOfClickState) => void;
   addNewRecentBlock: (block: ITacoBlock) => void;
   setTaqueriaAlkaneId: (alkaneId: ISchemaAlkaneId) => void;
 
@@ -40,14 +38,8 @@ interface GameStore {
   setUnclaimedTortillas: (tortillas: number) => void;
 }
 
-const defaultProofOfClickState: IProofOfClickState = {
-  initialSeed: "taco",
-  currentHash: "",
-  iterations: 0,
-};
-
 export const useGameStore = create<GameStore>()((set) => ({
-  proofOfClickState: defaultProofOfClickState,
+  proofOfClickState: null,
   userTortillasPerBlock: 0,
   totalTortillasPerBlock: 0,
   unclaimedTortillas: 0,
@@ -67,28 +59,9 @@ export const useGameStore = create<GameStore>()((set) => ({
     })),
   setProofOfClickState: (p) =>
     set((state) => ({
-      proofOfClickState: p
-        ? { ...state.proofOfClickState, ...p }
-        : defaultProofOfClickState,
+      proofOfClickState: p ? { ...state.proofOfClickState, ...p } : null,
     })),
-  doProofOfClickHash: () =>
-    set((state) => {
-      if (
-        state.proofOfClickState.iterations >=
-        ITERATIONS_NEEDED_FOR_PROOF_OF_CLICK
-      ) {
-        return state;
-      }
 
-      const newHash = xxHash64FromString(state.proofOfClickState.currentHash);
-      return {
-        proofOfClickState: {
-          ...state.proofOfClickState,
-          currentHash: newHash,
-          iterations: state.proofOfClickState.iterations + 1,
-        },
-      };
-    }),
   setUserTortillasPerBlock: (tortillas) =>
     set((state) => ({
       userTortillasPerBlock: tortillas,

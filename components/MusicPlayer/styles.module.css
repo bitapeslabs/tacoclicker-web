@@ -1,0 +1,188 @@
+.wrapper {
+  --mp-bg: var(--custom-dimmed-1);
+  --mp-border: var(--custom-disabled);
+  --mp-radius: 18px;
+  --mp-fg: #ffffff;
+  --mp-fg-dim: var(--custom-disabled);
+  --mp-fg-hover: #ffffff;
+  --mp-focus: 0 0 0 2px var(--custom-dimmed-2);
+  --mp-green: var(--custom-green);
+
+  position: absolute;
+  bottom: 50px;
+  right: 20px;
+  z-index: 10;
+  display: inline-flex;
+  padding: 10px 14px;
+  background: var(--mp-bg);
+  border-radius: var(--mp-radius);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  box-shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.15),
+    0 2px 4px -1px rgba(0, 0, 0, 0.4);
+  font-family: inherit;
+  color: var(--mp-fg);
+  gap: 4px;
+}
+
+.controlsCluster {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.iconBtn {
+  /* Remove Mantine default bg; we rely on our own */
+  background: transparent;
+  color: var(--mp-fg-dim);
+  border-radius: 12px;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 120ms ease, background 120ms ease;
+  cursor: pointer;
+  outline: none;
+  border: none;
+}
+
+.iconBtn svg {
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+}
+
+.iconBtn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--mp-fg-hover);
+}
+
+.iconBtn:active {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(1px);
+}
+
+.iconBtn:focus-visible {
+  box-shadow: var(--mp-focus);
+}
+
+.iconBtn.active {
+  background: linear-gradient(
+    180deg,
+    var(--custom-dimmed-1),
+    var(--custom-dimmed-2)
+  );
+  color: #ffffff;
+}
+
+.iconBtn.active:hover {
+  background: linear-gradient(
+    180deg,
+    var(--custom-dimmed-1),
+    var(--custom-dimmed-2)
+  );
+}
+
+.volumeWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.volumeWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.volumeSliderContainer {
+  position: absolute;
+  top: -150px;
+  left: 50%;
+  transform: translateX(-50%) translateY(6px) scale(0.9);
+  opacity: 0;
+  visibility: hidden;
+  padding: 14px 16px 18px;
+  background: var(--custom-dimmed-1);
+  border-radius: 16px;
+  box-shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  width: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  transition: opacity 140ms ease, transform 140ms ease, visibility 140ms;
+  z-index: 30;
+}
+
+.volumeVisible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* Custom vertical slider core */
+.vSlider {
+  position: relative;
+  width: 28px;
+  height: 120px;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.vTrack {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  pointer-events: none;
+}
+.vFill {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 8px;
+  background: var(--mp-green);
+  border-radius: 4px;
+  pointer-events: none;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25), 0 0 6px -1px var(--mp-green);
+}
+
+.vThumb {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--mp-green);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.55), 0 0 0 3px rgba(22, 193, 114, 0);
+  transition: box-shadow 120ms, transform 80ms, background 120ms;
+  pointer-events: none;
+}
+
+.vThumb.dragging {
+  transform: translate(-50%, 50%) scale(1.05);
+  box-shadow: 0 0 0 4px rgba(22, 193, 114, 0.35), 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.vSlider:focus-visible .vThumb {
+  box-shadow: 0 0 0 4px rgba(22, 193, 114, 0.45), 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+@media (max-width: 600px) {
+  .volumeSliderContainer {
+    top: -130px;
+    width: 56px;
+  }
+  .vSlider {
+    height: 110px;
+  }
+}

@@ -21,7 +21,6 @@ export const globalCSSVariablesResolver: CSSVariablesResolver = () => ({
       0.9
     ),
 
-    "--mantine-color-dark-1": "#203543",
     "--mantine-primary-color-light": "var(--mantine-color-green-light)",
     "--mantine-primary-color-light-hover":
       "var(--mantine-color-green-light-hover)",

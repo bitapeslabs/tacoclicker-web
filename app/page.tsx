@@ -1,5 +1,5 @@
 "use client";
-import { Box, Loader, Title } from "@mantine/core";
+import { Box, Loader, TextInput, Title } from "@mantine/core";
 import styles from "./page.module.css";
 import Navbar from "@/components/Navbar";
 import {
@@ -10,7 +10,7 @@ import {
 } from "@/components/SvgAsset";
 import { Button } from "@mantine/core";
 import { customColors } from "@/theme";
-import { playClickSound } from "@/lib/sounds";
+import { playClickBackSound, playClickSound } from "@/lib/sounds";
 import { useGameStore } from "@/store/gameStore";
 import { GiantTaco } from "@/components/GiantTaco";
 import { RecentBlocks } from "@/components/RecentBlocks";
@@ -26,33 +26,177 @@ import Image from "next/image";
 import { availableUpgrades } from "@/components/GameToolbar/upgrades";
 import { clickHandler } from "@/lib/utils";
 import Link from "next/link";
-import { IconArrowUpRight } from "@tabler/icons-react";
+import { IconArrowUpRight, IconX } from "@tabler/icons-react";
 import { useContractStore } from "@/store/useContracts";
 import { useLaserEyes } from "@omnisat/lasereyes";
 import { TacoClickerContract } from "@/lib/contracts/tacoclicker";
 import { consumeOrThrow } from "@/lib/boxed";
 import { useStoreHydrated } from "@/hooks/useStoreHydrated";
+import MusicPlayer from "@/components/MusicPlayer";
+import { SingularAlkanesTransfer, ParsableAlkaneId } from "alkanesjs";
+import { z } from "zod";
+import { useActivityStore } from "@/store/activityStore";
+export const amountSchema = z
+  .number({
+    invalid_type_error: "Value must be a number",
+    required_error: "Value is required",
+  })
+  .refine((val) => Number.isFinite(val), {
+    message: "Value must be a valid finite number",
+  })
+  .refine((val) => val > 1, {
+    message: "Value must be greater than 1",
+  })
+  .refine((val) => val < 10000, {
+    message: "Value must be less than 10000",
+  })
+  .refine(
+    (val) => {
+      const decimals = val.toString().split(".")[1];
+      return !decimals || decimals.length <= 8;
+    },
+    {
+      message: "Value must not have more than 8 decimal places",
+    }
+  );
+const SCALE_8 = 100_000_000n;
+
+export const toBigIntFixed8 = (v: number | string): bigint => {
+  const s = String(v);
+  if (!/^\d+(\.\d{0,8})?$/.test(s))
+    throw new Error("max 8 decimals & positive only");
+
+  const [i, f = ""] = s.split(".");
+  return BigInt(i) * SCALE_8 + BigInt((f + "00000000").slice(0, 8));
+};
 
 export function ClickerGameView() {
   const { proofOfClickState } = useGameStore();
 
+  const [isLoadingClaimButton, setIsLoadingClaimButton] = useState(false);
   const { address } = useLaserEyes();
-  const { tortillasPerBlock, unclaimedTortillas } = useUserGameStore();
-
+  const { tortillasPerBlock, unclaimedTortillas, taqueriaAlkaneIds } =
+    useUserGameStore();
+  const { tacoClickerContract } = useContractStore();
+  const { addActivity } = useActivityStore();
+  const [multiplier, setMultiplier] = useState<string | number>(2);
+  const [isLoading, setIsLoading] = useState(false);
   const userTortillasPerBlock = tortillasPerBlock[address] ?? 0;
   const userUnclaimedTortillas = unclaimedTortillas[address] ?? 0;
+  const taqueriaAlkaneId = taqueriaAlkaneIds[address] ?? null;
 
   const { openModals } = useModalsStore();
 
   const proofOfClickReady =
-    proofOfClickState.iterations === ITERATIONS_NEEDED_FOR_PROOF_OF_CLICK;
+    proofOfClickState?.currentHash?.hash.startsWith("0x00");
 
-  function handleProofOfClickSubmit() {
-    if (!proofOfClickReady) {
+  async function handleClaimSubmit() {
+    if (
+      !userUnclaimedTortillas ||
+      !tacoClickerContract ||
+      !address ||
+      !taqueriaAlkaneId
+    ) {
       return;
     }
 
-    playClickSound();
+    try {
+      setIsLoadingClaimButton(true);
+      let { txid } = consumeOrThrow(
+        await tacoClickerContract.claimTortilla(address, {
+          transfers: [
+            {
+              address,
+              amount: 1n,
+              asset: new ParsableAlkaneId(taqueriaAlkaneId).toAlkaneId(),
+            } as SingularAlkanesTransfer,
+          ],
+        })
+      );
+      addActivity(address, {
+        type: "claim",
+        title: `Claimed ${userUnclaimedTortillas} tortillas`,
+        unconfirmed_title: `Claiming ${userUnclaimedTortillas} tortillas`,
+        txid,
+        status: "pending",
+        created_at: Date.now(),
+      });
+      openModals([
+        modals.SuccessTxModal({ link: `${PROVIDER.explorerUrl}/tx/${txid}` }),
+      ]);
+    } catch (err) {
+      console.log("Claim error:", err);
+      openModals([
+        modals.ErrorTxModal({
+          content: err instanceof Error ? err.message : "Unknown error",
+        }),
+      ]);
+    }
+    setIsLoadingClaimButton(false);
+  }
+
+  async function handleBet() {
+    if (
+      !taqueriaAlkaneId ||
+      !tacoClickerContract ||
+      !address ||
+      proofOfClickState?.currentHash === null ||
+      !proofOfClickState
+    ) {
+      return;
+    }
+    if (!proofOfClickReady) {
+      openModals([
+        modals.ErrorTxModal({
+          content: "You need to find a valid proof of click first!",
+        }),
+      ]);
+      return;
+    }
+    try {
+      setIsLoading(true);
+      let { txid } = consumeOrThrow(
+        await tacoClickerContract.betOnBlock(
+          address,
+          {
+            nonce_found_poc: proofOfClickState.currentHash.nonce,
+            target_multiplier: toBigIntFixed8(multiplier),
+          },
+
+          {
+            transfers: [
+              {
+                address,
+                amount: 1n,
+                asset: new ParsableAlkaneId(taqueriaAlkaneId).toAlkaneId(),
+              } as SingularAlkanesTransfer,
+            ],
+          }
+        )
+      );
+      addActivity(address, {
+        type: "bet",
+        title: `Submitted bet for multiplier: ${multiplier}x`,
+        unconfirmed_title: `Betting for multiplier: ${multiplier}x`,
+        txid,
+        status: "pending",
+        created_at: Date.now(),
+      });
+      openModals([
+        modals.SuccessTxModal({
+          link: `${PROVIDER.explorerUrl}/tx/${txid}`,
+          content: `Bet placed for multiplier: ${multiplier}x`,
+        }),
+      ]);
+    } catch (err) {
+      console.log("Bet error:", err);
+      openModals([
+        modals.ErrorTxModal({
+          content: err instanceof Error ? err.message : "Unknown error",
+        }),
+      ]);
+    }
+    setIsLoading(false);
   }
 
   return (
@@ -73,9 +217,10 @@ export function ClickerGameView() {
           className={styles.tortillaClaimButton}
           size="lg"
           variant="green"
-          onClick={playClickSound}
+          onClick={clickHandler(handleClaimSubmit)}
           fullWidth
-          disabled={!userUnclaimedTortillas}
+          loading={isLoadingClaimButton}
+          disabled={!userUnclaimedTortillas || isLoadingClaimButton}
         >
           Claim{" "}
           <span className={styles.tortillaClaimButtonText}>
@@ -98,31 +243,56 @@ export function ClickerGameView() {
         <GiantTaco />
       </Box>
       <Box className={styles.clickerFooterContainer}>
-        <Box className={styles.clickerFooterTitle}>Block Multiplier:</Box>
+        {!proofOfClickReady && (
+          <Box className={styles.clickerFooterTitle}>Block Multiplier:</Box>
+        )}
+        {proofOfClickReady && (
+          <TextInput
+            rightSection={<IconX size={18} color="#637581" strokeWidth={3} />}
+            label="Type in a the multiplier you want to bet on:"
+            type="number"
+            placeholder="1.5"
+            value={multiplier}
+            onChange={(e) => {
+              let multiplierValue = parseFloat(e.currentTarget.value);
+              if (multiplierValue > 10000) {
+                return;
+              }
 
+              setMultiplier(multiplierValue ?? "");
+              playClickBackSound();
+            }}
+            classNames={{
+              label: styles.clickerFooterInputLabel,
+              root: styles.clickerFooterInputWrapper,
+              wrapper: styles.clickerFooterInputWrapper,
+              input: styles.clickerFooterInput,
+            }}
+          />
+        )}
         <Button
           variant="green"
           size="lg"
           fullWidth
-          onClick={handleProofOfClickSubmit}
+          onClick={clickHandler(handleBet)}
+          loading={isLoading}
           classNames={{
             root: styles.clickerFooterButton,
             label: styles.clickerFooterButtonLabel,
           }}
-          disabled={!proofOfClickReady}
+          disabled={
+            !proofOfClickReady ||
+            amountSchema.safeParse(multiplier).success === false
+          }
         >
           {!proofOfClickReady && (
             <Box className={styles.footerLabelContainer}>
-              click the taco{" "}
-              <span style={{ color: "white" }}>
-                {ITERATIONS_NEEDED_FOR_PROOF_OF_CLICK -
-                  proofOfClickState.iterations}
-              </span>{" "}
-              more times to clock in for next blocks multiplier
+              Keep clicking the taco to find a valid POC to clock in for next
+              blocks multiplier
             </Box>
           )}
 
-          {proofOfClickReady && <>Join next block's multiplier</>}
+          {proofOfClickReady && <>Bet on next block's multiplier</>}
         </Button>
 
         <Box
@@ -131,12 +301,11 @@ export function ClickerGameView() {
             proofOfClickReady && styles.clickerFooterHashEnabled
           )}
           style={{
-            visibility: proofOfClickState.currentHash.length
-              ? "visible"
-              : "hidden",
+            visibility: proofOfClickState?.currentHash ? "visible" : "hidden",
           }}
         >
-          Current xxHash64 (proof of click): {proofOfClickState.currentHash}
+          Last hash found (proof of click):{" "}
+          {proofOfClickState?.currentHash?.hash ?? ""}
         </Box>
       </Box>
     </Box>
@@ -215,7 +384,7 @@ export function RegistrationView() {
       );
       setRegistrationTxid(address, response.txid);
     } catch (err) {
-      console.error("Registration error:", err);
+      console.log("Registration error:", err);
     } finally {
       registeringRef.current = false;
     }
@@ -256,7 +425,6 @@ export function RegistrationView() {
 
       <CustomStepper steps={steps} activeStep={step} />
 
-      {/* STEP 0: Not registered */}
       {step === 0 && (
         <>
           <Box className={styles.registrationFlowDescription}>
@@ -270,11 +438,11 @@ export function RegistrationView() {
             <br />
             To start, buy a taqueria for{" "}
             <span style={{ color: "var(--custom-yellow) !important" }}>
-              21,000 sats
+              21,000 sats (~22 usd)
             </span>
-            . Includes a free taquero that{" "}
+            . This includes a free taquero that{" "}
             <span style={{ color: "#fff" }}>
-              passively generates tortilla every block
+              passively generates for you tortilla every block
             </span>
             .
           </Box>
@@ -284,7 +452,10 @@ export function RegistrationView() {
               Included in your taqueria:
             </Title>
 
-            <Box className={styles.upgradeItem}>
+            <Box
+              className={styles.upgradeItem}
+              onClick={clickHandler(() => {})}
+            >
               <Box className={styles.upgradeImageWrapper}>
                 <img
                   src={`/assets/taquero.png`}
@@ -330,7 +501,6 @@ export function RegistrationView() {
         </>
       )}
 
-      {/* STEP 1: Tx broadcasted */}
       {step === 1 && (
         <Box className={styles.registrationFlowLoadingContainer}>
           <Loader size={48} color="#fff" />
@@ -342,7 +512,7 @@ export function RegistrationView() {
           <Box className={styles.registrationFlowDescription}>
             {finalizing
               ? "Waiting for trace & resolving the taqueria contract…"
-              : "Transaction broadcasted, waiting for confirmation."}
+              : "Transaction broadcasted, waiting for confirmation. If the transaction has already confirmed but doesnt show here, please refresh this page."}
           </Box>
           {regTxid && (
             <Button
@@ -384,7 +554,7 @@ export default function Home() {
   const { openModals } = useModalsStore();
 
   const proofOfClickReady =
-    proofOfClickState.iterations === ITERATIONS_NEEDED_FOR_PROOF_OF_CLICK;
+    proofOfClickState?.currentHash?.hash.startsWith("0x00");
 
   function handleProofOfClickSubmit() {
     if (!proofOfClickReady) {
@@ -402,6 +572,8 @@ export default function Home() {
       <Box className={styles.upperGameContainer}>
         <Box className={styles.upperClickerContainer}>
           <RadialBurst />
+          <MusicPlayer />
+
           {isGameEnabled && <ClickerGameView />}
           {!isGameEnabled && <RegistrationView />}
           {isGameEnabled && (

@@ -8,7 +8,8 @@
 import { esplora_getblocks } from "@/lib/apis/esplora";
 import { getMultiplierFromBlockHash } from "@/lib/crypto/taco";
 import { useGameStore } from "@/store/gameStore";
-import { isBoxedError } from "@/lib/boxed";
+import { isBoxedError, consumeOrNull } from "@/lib/boxed";
+import { PROVIDER } from "./consts";
 
 const POLL_EVERY_MS = 10_000;
 let last_block = "";
@@ -17,7 +18,7 @@ async function syncRecentBlocks() {
   const startTime = Date.now();
   const res = await esplora_getblocks(); // latest blocks
   if (isBoxedError(res)) {
-    console.error("esplora_getblocks failed:", res.message);
+    console.log("esplora_getblocks failed:", res.message);
     return;
   }
   let elapsedTime = Date.now() - startTime;
@@ -27,6 +28,17 @@ async function syncRecentBlocks() {
 
     return;
   } // no new blocks, skip
+
+  let metashrew_block_height = Number(
+    consumeOrNull(
+      await PROVIDER.rpc.alkanes.alkanes_metashrewHeight().call()
+    ) ?? "0"
+  );
+
+  if (metashrew_block_height < Number(res.data[0].height)) {
+    //Metashrew is still syncing, skip
+    return;
+  }
 
   const blocks = res.data.slice(0, 4).map((b) => ({
     blockNumber: b.height,

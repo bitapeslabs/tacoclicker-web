@@ -208,12 +208,41 @@
   width: 300px;
 }
 
+.clickerFooterInputWrapper {
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.clickerFooterInputLabel {
+  text-align: left !important;
+  width: 100% !important;
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 900;
+  color: var(--custom-disabled) !important;
+  font-size: var(--mantine-font-size-sm);
+}
+
+.clickerFooterInput {
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 900;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  outline: none !important;
+  color: var(--custom-green) !important;
+}
+.clickerFooterInput:focus {
+  border-color: var(--custom-disabled) !important;
+}
+
 .clickerFooterButton {
   text-wrap: wrap;
 }
 
 .footerLabelContainer {
-  font-size: 14px;
+  font-size: 12px;
   text-align: left;
   text-wrap: wrap;
 }
@@ -301,6 +330,7 @@
 }
 
 .clickerFooterContainer {
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -319,11 +349,15 @@
 }
 
 .clickerFooterHashDisabled {
+  text-align: center;
+  line-height: 14px;
   color: var(--custom-disabled);
   font-size: 12px;
 }
 
 .clickerFooterHashEnabled {
+  text-align: center;
+  line-height: 14px;
   color: var(--custom-green);
   font-size: 12px;
 }
@@ -361,7 +395,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: "Lilita One", sans-serif;
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 900;
 }
 
 @keyframes spin {

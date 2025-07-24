@@ -12,27 +12,29 @@ export const TELEGRAM_URL = "https://t.me/tacoclicker";
 export const X_URL = "https://x.com/tacoclickerbtc";
 export const WALLETS: ProviderType[] = [UNISAT, XVERSE, OKX, OYL];
 export const WALLET_NETWORK = SIGNET;
-
+//https://signet.sandshrew.io/v1/94a9ab1efa54e81946d20959f774987b"
 export const PROVIDER = new Provider({
   sandshrewUrl:
     "https://signet.sandshrew.io/v1/94a9ab1efa54e81946d20959f774987b",
-  electrumApiUrl: "https://signet.mezcal.sh/api/esplora",
+  electrumApiUrl: "https://signet.mezcal.sh/esplora",
   network: bitcoin.networks.testnet,
   explorerUrl: "https://mempool.space/signet",
-  defaultFeeRate: 5,
+  defaultFeeRate: 20,
 });
+
+export const AUDIO_PROVIDER = "https://tacoclicker.com/audio";
 
 export const ELECTRUM_API_URL = PROVIDER.electrumApiUrl;
 export const IDCLUB_URL = "https://idclub.io/marketplace/token/2:16";
 
 export const tacoClickerAlkaneId: AlkaneId = {
   block: 2n,
-  tx: 782n,
+  tx: 839n,
 };
 
 export const tortillaAlkaneId: AlkaneId = {
   block: 2n,
-  tx: 783n,
+  tx: 840n,
 };
 
 export const NETWORK_NAME = "signet";

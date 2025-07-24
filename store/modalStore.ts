@@ -1,9 +1,11 @@
 import { create } from "zustand";
 import { IAgnosticModalProps } from "@/components/AgnosticModal/types";
+import { SuccessTxModal } from "@/components/AgnosticModal/modals";
 
 export type ModalStep = {
   name: IAgnosticModalProps["current"]["name"];
-  content?: React.ReactNode;
+  content?: React.ReactNode | string;
+  link?: string; // Optional link for modals that might need it
   waitFor?: () => Promise<void>; // optional async step
 };
 
@@ -21,6 +23,19 @@ export const modals = {
   WalletConnect: (props?: ModalShortcutProps): ModalStep => {
     return {
       name: "wallet_connect",
+    };
+  },
+  SuccessTxModal: (props?: ModalShortcutProps): ModalStep => {
+    return {
+      name: "success_tx_modal",
+      content: props?.content,
+      link: props?.link, // Optional link for modals that might need it
+    };
+  },
+  ErrorTxModal: (props?: ModalShortcutProps): ModalStep => {
+    return {
+      name: "error_tx_modal",
+      content: props?.content,
     };
   },
 };

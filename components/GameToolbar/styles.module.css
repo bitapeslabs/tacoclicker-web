@@ -103,20 +103,34 @@
 }
 
 .upgradeItem:hover {
-  cursor: pointer;
   filter: brightness(1.15);
 }
 
 .upgradeItem:active {
-  cursor: pointer;
   filter: brightness(1.25);
+}
+
+.upgradeRadialBurst {
+  display: none;
+  opacity: 0.3;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
 }
 
 .upgradeItem:hover .upgradeImageWrapper {
   background-color: #fad49c;
 }
 
+.upgradeItem:hover .upgradeRadialBurst {
+  display: flex;
+}
+
 .upgradeImageWrapper {
+  position: relative;
   background-color: var(--custom-dimmed-2);
   display: flex;
   align-items: center;
@@ -132,6 +146,7 @@
 }
 
 .upgradeImageInner {
+  z-index: 2;
   object-fit: contain;
   width: 100%;
   height: 100%;
@@ -177,6 +192,12 @@
   font-size: var(--mantine-font-size-md);
 }
 
+.upgradeDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .tooltipUpper {
   display: flex;
   flex-direction: row;
@@ -211,7 +232,7 @@
 .tooltipOwnedText {
   font-family: "Red Hat Display", sans-serif;
   font-weight: 700;
-  color: var(--custom-disabled);
+  color: #fff;
   font-size: 14px;
   background-color: var(--custom-dimmed-2);
   width: fit-content;
@@ -241,7 +262,7 @@
 .tooltipInfo {
   font-family: "Red Hat Display", sans-serif;
   font-weight: 700;
-  color: var(--custom-disabled);
+  color: #fff;
   font-size: 12px;
   margin-top: 10px;
   padding: 8px;
@@ -251,4 +272,108 @@
   display: inline-flex;
   border-radius: 8px;
   width: 100%;
+}
+.activityContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 1px;
+  padding-bottom: 42px;
+}
+
+.clearActivityButton {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  width: 370px;
+}
+
+.activityItem {
+  position: relative;
+  text-decoration: none !important  ;
+
+  user-select: none !important;
+  display: flex;
+  width: 100%;
+  gap: 16px;
+  padding: 16px 16px;
+  background-color: var(--custom-dimmed-1);
+  cursor: pointer;
+  transition: filter 80ms ease;
+}
+
+.activityItem:hover {
+  filter: brightness(1.15);
+}
+
+.activityItem:active {
+  filter: brightness(1.25);
+}
+
+.activityIconWrapper {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 8px;
+  background: var(--custom-green);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activityIconPending {
+  background-color: var(--custom-yellow);
+}
+.activityIconReverted {
+  background-color: var(--custom-red);
+}
+.activityBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.activityUrlIcon {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  color: var(--custom-disabled);
+}
+
+.activityTitle {
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 900;
+  font-size: 16px;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.activityStatusPending {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--custom-disabled);
+}
+
+.activityStatusReverted {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--custom-red);
+}
+
+.activityStatusConfirmed {
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--custom-green);
 }
