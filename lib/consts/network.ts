@@ -37,12 +37,12 @@ export const IDCLUB_URL = "https://idclub.io/marketplace/token/2:62029";
 
 export const tacoClickerAlkaneId: AlkaneId = {
   block: 2n,
-  tx: 62027n,
+  tx: 62081n,
 };
 
 export const tortillaAlkaneId: AlkaneId = {
   block: 2n,
-  tx: 62029n,
+  tx: 62082n,
 };
 
 export const NETWORK_NAME = "mainnet";

@@ -98,8 +98,8 @@ export const getEmissions = (
 
   const totalWeight = globalState.emission_state.total_weight ?? 0n;
   const tortillasPerBlock = getTotalEmissionWithHeight(
-    height,
-    Number(globalState.emission_state.genesis_block)
+    height ?? 0,
+    Number(globalState.emission_state.genesis_block ?? 0)
   );
 
   return availableUpgrades.reduce((out, u) => {
