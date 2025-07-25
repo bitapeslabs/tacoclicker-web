@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { TacoClickerContract } from "@/lib/contracts/tacoclicker"; // adjust
 import { ControlledMintContract } from "@/lib/contracts/controlledmint";
 import {
@@ -129,6 +129,22 @@ interface UserGameStore {
   ) => Promise<void>;
 }
 
+const BIGINT_TAG = "__bi__:";
+type PersistedSlice = Pick<
+  UserGameStore,
+  "registrationTxids" | "taqueriaAlkaneIds" | "activities"
+>;
+
+type ReplacerFn = (key: string, value: unknown) => unknown;
+type ReviverFn = (key: string, value: unknown) => unknown;
+
+const bigintReplacer: ReplacerFn = (_k, v) =>
+  typeof v === "bigint" ? BIGINT_TAG + v.toString() : v;
+
+const bigintReviver: ReviverFn = (_k, v) =>
+  typeof v === "string" && v.startsWith(BIGINT_TAG)
+    ? BigInt(v.slice(BIGINT_TAG.length))
+    : v;
 export const useUserGameStore = create<UserGameStore>()(
   persist(
     (set, get) => ({
@@ -475,11 +491,14 @@ export const useUserGameStore = create<UserGameStore>()(
     {
       name: "user-game-store",
       version: 1,
-      // Only persist what you requested
-      partialize: (state) => ({
-        registrationTxids: state.registrationTxids,
-        taqueriaAlkaneIds: state.taqueriaAlkaneIds,
-        activities: state.activities,
+      partialize: (s) => ({
+        registrationTxids: s.registrationTxids,
+        taqueriaAlkaneIds: s.taqueriaAlkaneIds,
+        activities: s.activities,
+      }),
+      storage: createJSONStorage<PersistedSlice>(() => localStorage, {
+        replacer: bigintReplacer,
+        reviver: bigintReviver,
       }),
     }
   )
