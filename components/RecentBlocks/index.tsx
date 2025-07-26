@@ -277,6 +277,11 @@ export function RecentBlocks() {
     playSoundIfNeeded();
   }, [recentBlocks]);
 
+  let nextSalsaBlock =
+    (recentBlocks[0].blockNumber ?? 0) +
+    (SALSA_BLOCK_MODULO -
+      ((recentBlocks[0].blockNumber ?? 0) % SALSA_BLOCK_MODULO));
+
   return (
     <Box className={styles.upperContainer}>
       <Modal
@@ -288,6 +293,17 @@ export function RecentBlocks() {
       >
         <AllBlocksTable />
       </Modal>
+      <Box className={styles.salsaTooltip}>
+        🌶️ Next Salsa Block:
+        <Box className={styles.salsaTooltipCount}>
+          {nextSalsaBlock - recentBlocks[0].blockNumber} blocks left
+        </Box>
+        <Box className={styles.salsaTooltipBlocks}>
+          {" "}
+          <IconBlocks size={18} /> {nextSalsaBlock.toLocaleString("en-US")}
+          <br />
+        </Box>
+      </Box>
       <Box className={styles.title}>Latest Blocks</Box>
 
       <AnimatePresence mode="popLayout" initial={false}>

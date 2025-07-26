@@ -36,6 +36,38 @@
   color: #000 !important;
 }
 
+.salsaTooltip {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background-color: var(--custom-dimmed-1);
+  font-weight: 900;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  color: var(--custom-disabled);
+  font-family: "Red Hat Display", sans-serif;
+  padding: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-radius: 18px;
+  font-size: 14px;
+  margin-bottom: 40px;
+}
+
+.salsaTooltipBlocks {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 5px;
+  font-size: 14px;
+  color: var(--custom-text-color);
+}
+
+.salsaTooltipCount {
+  font-size: 16px;
+  color: #fff;
+  font-weight: 900;
+}
+
 .salsaBlockText {
   font-size: 12px;
 }
