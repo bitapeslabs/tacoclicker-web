@@ -73,7 +73,7 @@ export const getTotalEmissionWithHeight = (
   height: number,
   genesis_height: number
 ): bigint => {
-  const INTERVAL = 2n;
+  const INTERVAL = 2_500n;
   const START = 15_000n * 10n ** 8n; // 15,000 alkanes per block, in microalkanes
   const FLOOR = 100n * 10n ** 8n; // 100 alkanes per block, in microalkanes
 
