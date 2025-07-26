@@ -278,9 +278,9 @@ export function RecentBlocks() {
   }, [recentBlocks]);
 
   let nextSalsaBlock =
-    (recentBlocks[0].blockNumber ?? 0) +
+    (recentBlocks?.[0]?.blockNumber ?? 0) +
     (SALSA_BLOCK_MODULO -
-      ((recentBlocks[0].blockNumber ?? 0) % SALSA_BLOCK_MODULO));
+      ((recentBlocks?.[0]?.blockNumber ?? 0) % SALSA_BLOCK_MODULO));
 
   return (
     <Box className={styles.upperContainer}>
