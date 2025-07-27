@@ -296,7 +296,7 @@ export function RecentBlocks() {
       <Box className={styles.salsaTooltip}>
         🌶️ Next Salsa Block:
         <Box className={styles.salsaTooltipCount}>
-          {nextSalsaBlock - recentBlocks[0].blockNumber} blocks left
+          {nextSalsaBlock - (recentBlocks?.[0]?.blockNumber ?? 0)} blocks left
         </Box>
         <Box className={styles.salsaTooltipBlocks}>
           {" "}
