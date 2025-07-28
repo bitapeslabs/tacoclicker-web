@@ -390,6 +390,11 @@ function RegistrationView() {
       );
       setRegistrationTxid(address, response.txid);
     } catch (err) {
+      openModals([
+        modals.ErrorTxModal({
+          content: err instanceof Error ? err.message : "Unknown error",
+        }),
+      ]);
       console.log("Registration error:", err);
     } finally {
       registeringRef.current = false;
