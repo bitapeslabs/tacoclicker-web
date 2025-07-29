@@ -34,6 +34,8 @@ export const AUDIO_PROVIDER = "https://tacoclicker.com/audio";
 
 export const ELECTRUM_API_URL = PROVIDER.electrumApiUrl;
 export const IDCLUB_URL = "https://idclub.io/marketplace/token/2:62083";
+export const IDCLUB_HOLDERS_BASE_URL =
+  "https://alkanes-api.idclub.io/indexer/holderPage";
 
 export const tacoClickerAlkaneId: AlkaneId = {
   block: 2n,

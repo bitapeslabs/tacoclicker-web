@@ -1,7 +1,8 @@
 import { useGameStore } from "@/store/gameStore";
-import { Box, Button, Table, Skeleton, Group } from "@mantine/core";
+import { Box, Button, Table, Skeleton, Group, Text } from "@mantine/core";
 import {
   IconArrowRight,
+  IconArrowUpRight,
   IconBlocks,
   IconCheck,
   IconCopy,
@@ -32,6 +33,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getMultiplierFromBlockHash } from "@/lib/crypto/taco";
 import { esplora_getblocks } from "@/lib/apis/esplora";
 import { isBoxedError } from "@/lib/boxed";
+import { useUserGameStore } from "@/store/userGameStore";
+import Link from "next/link";
+import { idclub_getholders } from "@/lib/apis/idclub";
+import { consumeOrNull } from "@/lib/boxed";
 
 export const SALSA_BLOCK_MODULO = 144;
 
@@ -230,8 +235,13 @@ const itemVariants: Variants = {
 
 export function RecentBlocks() {
   const { recentBlocks } = useGameStore();
+  const { globalState } = useUserGameStore();
   const hasMounted = useRef(false);
   const [opened, { open, close }] = useDisclosure(false);
+
+  const [salsaWinnerTaqueriaAddress, setSalsaWinnerTaqueriaAddress] = useState<
+    string | null
+  >(null);
 
   const handleViewAll = () => {
     playClickSound();
@@ -282,6 +292,31 @@ export function RecentBlocks() {
     (SALSA_BLOCK_MODULO -
       ((recentBlocks?.[0]?.blockNumber ?? 0) % SALSA_BLOCK_MODULO));
 
+  useEffect(() => {
+    const fetchHolderOfWinnerTaqueria = async () => {
+      let winnerTaqueriaId = globalState?.salsa_state?.best_hash_owner ?? {
+        block: 0n,
+        tx: 0n,
+      };
+
+      let holders = consumeOrNull(
+        await idclub_getholders(`2:${winnerTaqueriaId.tx.toString()}`)
+      );
+      if (!holders) {
+        return;
+      }
+      setSalsaWinnerTaqueriaAddress(
+        holders?.data?.records?.[0]?.address ?? null
+      );
+    };
+
+    fetchHolderOfWinnerTaqueria();
+
+    return () => {
+      setSalsaWinnerTaqueriaAddress(null);
+    };
+  }, [globalState]);
+
   return (
     <Box className={styles.upperContainer}>
       <Modal
@@ -293,6 +328,27 @@ export function RecentBlocks() {
       >
         <AllBlocksTable />
       </Modal>
+      <Button
+        href={`https://ordiscan.com/address/${salsaWinnerTaqueriaAddress}`}
+        target="_blank"
+        variant="transparent"
+        size="lg"
+        component={Link}
+        onClick={handleViewAll}
+        classNames={{
+          root: styles.viewAllButton,
+          label: styles.viewAllButtonLabel,
+          inner: styles.viewAllButtonInner,
+        }}
+        rightSection={<IconArrowUpRight size={18} strokeWidth={4} />}
+      >
+        View last salsa winner
+      </Button>
+      <Text className={styles.lastUpdated}>
+        Updated on:{" "}
+        {globalState?.salsa_state?.current_block?.toLocaleString("en-US") ??
+          "--"}
+      </Text>
       <Box className={styles.salsaTooltip}>
         🌶️ Next Salsa Block:
         <Box className={styles.salsaTooltipCount}>
@@ -304,6 +360,7 @@ export function RecentBlocks() {
           <br />
         </Box>
       </Box>
+
       <Box className={styles.title}>Latest Blocks</Box>
 
       <AnimatePresence mode="popLayout" initial={false}>
