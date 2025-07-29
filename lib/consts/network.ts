@@ -24,7 +24,7 @@ export const WALLET_NETWORK = MAINNET;
 //https://signet.sandshrew.io/v1/94a9ab1efa54e81946d20959f774987b"
 export const PROVIDER = new Provider({
   sandshrewUrl: "https://tacoclicker.com/api/sandshrew",
-  electrumApiUrl: "https://mempool.space/api",
+  electrumApiUrl: "https://cloak-barrett-vendor.pyrosec.is/",
   network: bitcoin.networks.bitcoin,
   explorerUrl: "https://mempool.space",
   defaultFeeRate: 3,
