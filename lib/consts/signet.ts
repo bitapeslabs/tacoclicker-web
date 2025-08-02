@@ -20,13 +20,13 @@ export const GITHUB_URL = "https://github.com/bitapeslabs/tacoclicker-rs";
 export const TELEGRAM_URL = "https://t.me/tacoclicker";
 export const X_URL = "https://x.com/tacoclickerbtc";
 export const WALLETS: ProviderType[] = [UNISAT, OYL];
-export const WALLET_NETWORK = MAINNET;
+export const WALLET_NETWORK = SIGNET;
 //https://signet.sandshrew.io/v1/94a9ab1efa54e81946d20959f774987b"
 export const PROVIDER = new Provider({
-  sandshrewUrl: "https://tacoclicker.com/api/sandshrew",
-  electrumApiUrl: "https://tacoclicker.com/api/esplora",
-  network: bitcoin.networks.bitcoin,
-  explorerUrl: "https://mempool.space",
+  sandshrewUrl: "https://signet.mezcal.sh/sandshrew",
+  electrumApiUrl: "https://signet.mezcal.sh/esplora",
+  network: bitcoin.networks.testnet,
+  explorerUrl: "https://mempool.space/signet",
   defaultFeeRate: 3,
 });
 
@@ -39,13 +39,16 @@ export const IDCLUB_HOLDERS_BASE_URL =
 
 export const tacoClickerAlkaneId: AlkaneId = {
   block: 2n,
-  tx: 62081n,
+  tx: 1039n,
 };
 
 export const tortillaAlkaneId: AlkaneId = {
   block: 2n,
-  tx: 62083n,
+  tx: 1040n,
 };
 
-export const NETWORK_NAME = "mainnet";
+export const NETWORK_NAME = "signet";
 export const MEZCAL_RPC_URL = "https://mezcal.sh/api";
+export const TACOCLICKER_FUNDING_ADDRESS =
+  "tb1qlsqdxeasvpe2ak8yj3uvrtmjp2j3u22j5yp4gf";
+export const VESTING_WINDOW_FOR_SALSA_REWARD = 4;

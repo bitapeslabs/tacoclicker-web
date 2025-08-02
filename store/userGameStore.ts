@@ -15,6 +15,7 @@ import {
   IAvailableUpgrades,
   IGlobalState,
   ITaqueriaEmissionState,
+  ITaqueriaBetState,
 } from "@/lib/contracts/tacoclicker/schemas";
 import {
   BoxedResponse,
@@ -75,6 +76,7 @@ interface UserGameStore {
   contracts: ContractCache;
   globalState: IGlobalState | null;
   taqueriaEmissionStates: Record<string, ITaqueriaEmissionState | null>;
+  taquriaBetStates: Record<string, ITaqueriaBetState | null>;
 
   /** In-flight guards per address (not persisted) */
   inFlightFetch: Record<string, boolean>;
@@ -93,6 +95,9 @@ interface UserGameStore {
     addr: string,
     view: ITaqueriaEmissionState | null
   ) => void;
+
+  setTaquriaBetStates: (addr: string, view: ITaqueriaBetState | null) => void;
+
   setUnclaimedTortillas: (addr: string, v: number | null) => void;
   setTortillasPerBlock: (addr: string, v: number | null) => void;
   setContract: (addr: string, c: ControlledMintContract | null) => void;
@@ -159,6 +164,7 @@ export const useUserGameStore = create<UserGameStore>()(
       tortillasPerBlock: {},
       loadingFlags: {},
       attemptedInitialFetch: {},
+      taquriaBetStates: {},
       taqueriaEmissionStates: {},
       contracts: {},
       inFlightFetch: {},
@@ -175,6 +181,13 @@ export const useUserGameStore = create<UserGameStore>()(
           if (!view) delete next[addr];
           else next[addr] = view;
           return { taqueriaEmissionStates: next };
+        }),
+      setTaquriaBetStates: (addr, view) =>
+        set((s) => {
+          const next = { ...s.taquriaBetStates };
+          if (!view) delete next[addr];
+          else next[addr] = view;
+          return { taquriaBetStates: next };
         }),
 
       setCurrentAddress: (addr) => set({ currentAddress: addr }),
@@ -342,6 +355,7 @@ export const useUserGameStore = create<UserGameStore>()(
             upgradesRaw,
             globalState,
             taqueriaEmissionState,
+            taqueriaBetState,
           ] = consumeAll(
             await Promise.all([
               fetchPerBlock
@@ -363,6 +377,7 @@ export const useUserGameStore = create<UserGameStore>()(
               tacoClickerContract.getTaqueriaEmissionState({
                 taqueria: currentId,
               }),
+              tacoClickerContract.getBetStateForTaqueria(currentId),
             ] as const)
           );
 
@@ -394,6 +409,10 @@ export const useUserGameStore = create<UserGameStore>()(
 
           if (globalState) {
             get().setGlobalState(globalState);
+          }
+
+          if (taqueriaBetState) {
+            get().setTaquriaBetStates(address, taqueriaBetState);
           }
 
           get().markAttemptedInitialFetch(address);
@@ -432,6 +451,7 @@ export const useUserGameStore = create<UserGameStore>()(
             upgrades,
             globalState,
             taqueriaEmissionState,
+            taqueriaBetState,
           ] = consumeAll(
             await Promise.all([
               tacoClicker.getTortillaPerBlockForTaqueria({
@@ -455,6 +475,8 @@ export const useUserGameStore = create<UserGameStore>()(
               tacoClicker.getTaqueriaEmissionState({
                 taqueria: id,
               }),
+
+              tacoClicker.getBetStateForTaqueria(id),
             ] as const)
           );
 
@@ -477,6 +499,7 @@ export const useUserGameStore = create<UserGameStore>()(
           get().setUnclaimedTortillas(address, unclaimed);
           get().setBalance(address, tortillaBalance);
           get().setGlobalState(globalState);
+          get().setTaquriaBetStates(address, taqueriaBetState);
         } catch (err) {
           console.log("Error in refreshForAddressOnNewBlock:", err);
         } finally {

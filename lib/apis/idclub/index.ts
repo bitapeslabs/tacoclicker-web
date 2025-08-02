@@ -1,5 +1,5 @@
 import { BoxedResponse, BoxedSuccess, BoxedError } from "@/lib/boxed";
-import { IDCLUB_HOLDERS_BASE_URL } from "@/lib/consts/network";
+import { IDCLUB_HOLDERS_BASE_URL } from "@/lib/consts";
 enum FetchError {
   UnknownError = "UnknownError",
 }

@@ -30,6 +30,7 @@ import {
   IMerkleTree,
   schemaMerkleProof,
   IMerkleProof,
+  schemaTaqueriaBetState,
 } from "./schemas";
 
 import { Infer as BorshInfer, borshSerialize } from "borsher";
@@ -42,6 +43,10 @@ import {
 } from "@/lib/boxed";
 import { ControlledMintContract } from "../controlledmint";
 import createHash from "create-hash";
+import {
+  TACOCLICKER_FUNDING_ADDRESS,
+  VESTING_WINDOW_FOR_SALSA_REWARD,
+} from "@/lib/consts";
 
 const strip0x = (h: string) => (h.startsWith("0x") ? h.slice(2) : h);
 function u128ToBuffer(n: bigint | number): Buffer {
@@ -338,6 +343,18 @@ const TacoClickerABI = MerkleDistributorABI.extend({
 
   register: abi.opcode(119n).execute().returns(schemaAlkaneId),
 
+  transferOwnershipOfTortillaToken: abi
+    .opcode(122n)
+    .execute(schemaAlkaneId)
+    .returns("uint8Array"),
+
+  getTacoclickerAdminAlkaneId: abi.opcode(123n).view().returns(schemaAlkaneId),
+
+  getBetStateForTaqueria: abi
+    .opcode(124n)
+    .view(schemaAlkaneId)
+    .returns(schemaTaqueriaBetState),
+
   getMultiplierFromBlockhash: abi.opcode(999n).custom(async function (
     this: AlkanesBaseContract,
     opcode,
@@ -393,8 +410,10 @@ export class TacoClickerContract extends abi.attach(
   AlkanesBaseContract,
   TacoClickerABI
 ) {
-  public static readonly FUNDING_ADDRESS =
-    "bc1qe2734hgzqxncast898vzz2p4dun2d2q747a52y";
+  public static readonly FUNDING_ADDRESS = TACOCLICKER_FUNDING_ADDRESS;
+
+  public static readonly VESTING_WINDOW_FOR_SALSA_REWARD =
+    VESTING_WINDOW_FOR_SALSA_REWARD;
 
   public static readonly TAQUERIA_COST_SATS = 21_000n;
 

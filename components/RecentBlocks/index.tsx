@@ -239,10 +239,6 @@ export function RecentBlocks() {
   const hasMounted = useRef(false);
   const [opened, { open, close }] = useDisclosure(false);
 
-  const [salsaWinnerTaqueriaAddress, setSalsaWinnerTaqueriaAddress] = useState<
-    string | null
-  >(null);
-
   const handleViewAll = () => {
     playClickSound();
     open();
@@ -287,36 +283,6 @@ export function RecentBlocks() {
     playSoundIfNeeded();
   }, [recentBlocks]);
 
-  let nextSalsaBlock =
-    (recentBlocks?.[0]?.blockNumber ?? 0) +
-    (SALSA_BLOCK_MODULO -
-      ((recentBlocks?.[0]?.blockNumber ?? 0) % SALSA_BLOCK_MODULO));
-
-  useEffect(() => {
-    const fetchHolderOfWinnerTaqueria = async () => {
-      let winnerTaqueriaId = globalState?.salsa_state?.best_hash_owner ?? {
-        block: 0n,
-        tx: 0n,
-      };
-
-      let holders = consumeOrNull(
-        await idclub_getholders(`2:${winnerTaqueriaId.tx.toString()}`)
-      );
-      if (!holders) {
-        return;
-      }
-      setSalsaWinnerTaqueriaAddress(
-        holders?.data?.records?.[0]?.address ?? null
-      );
-    };
-
-    fetchHolderOfWinnerTaqueria();
-
-    return () => {
-      setSalsaWinnerTaqueriaAddress(null);
-    };
-  }, [globalState]);
-
   return (
     <Box className={styles.upperContainer}>
       <Modal
@@ -328,38 +294,6 @@ export function RecentBlocks() {
       >
         <AllBlocksTable />
       </Modal>
-      <Button
-        href={`https://ordiscan.com/address/${salsaWinnerTaqueriaAddress}`}
-        target="_blank"
-        variant="transparent"
-        size="lg"
-        component={Link}
-        onClick={handleViewAll}
-        classNames={{
-          root: styles.viewAllButton,
-          label: styles.viewAllButtonLabel,
-          inner: styles.viewAllButtonInner,
-        }}
-        rightSection={<IconArrowUpRight size={18} strokeWidth={4} />}
-      >
-        View last salsa winner
-      </Button>
-      <Text className={styles.lastUpdated}>
-        Updated on:{" "}
-        {globalState?.salsa_state?.current_block?.toLocaleString("en-US") ??
-          "--"}
-      </Text>
-      <Box className={styles.salsaTooltip}>
-        🌶️ Next Salsa Block:
-        <Box className={styles.salsaTooltipCount}>
-          {nextSalsaBlock - (recentBlocks?.[0]?.blockNumber ?? 0)} blocks left
-        </Box>
-        <Box className={styles.salsaTooltipBlocks}>
-          {" "}
-          <IconBlocks size={18} /> {nextSalsaBlock.toLocaleString("en-US")}
-          <br />
-        </Box>
-      </Box>
 
       <Box className={styles.title}>Latest Blocks</Box>
 

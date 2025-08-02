@@ -4,6 +4,7 @@ import { BorshSchema, Infer as BorshInfer } from "borsher";
 export const schemaTacoClickerInitializeParams = BorshSchema.Struct({
   controlled_mint_factory: schemaAlkaneId,
   network_id: BorshSchema.u8,
+  premine: BorshSchema.u128,
 });
 
 export const schemaTacoClickerConsts = BorshSchema.Struct({
@@ -12,6 +13,16 @@ export const schemaTacoClickerConsts = BorshSchema.Struct({
   network_id: BorshSchema.u8,
   airdrop_height_end: BorshSchema.u64,
 });
+
+export const schemaTaqueriaBetState = BorshSchema.Struct({
+  last_block_bet_at: BorshSchema.u64,
+  last_block_paid_salsa_reward: BorshSchema.u64,
+  current_salsa_block_won: BorshSchema.u64,
+  initial_salsa_debt: BorshSchema.u128,
+  current_salsa_debt: BorshSchema.u128,
+});
+
+export type ITaqueriaBetState = BorshInfer<typeof schemaTaqueriaBetState>;
 
 export type IAlkaneId = BorshInfer<typeof schemaAlkaneId>;
 

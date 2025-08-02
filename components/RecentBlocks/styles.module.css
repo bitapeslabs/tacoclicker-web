@@ -37,6 +37,22 @@
   width: 320px;
 }
 
+.salsaInfoContainer {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 0;
+}
+
+.salsaDisclaimer {
+  margin-top: 20px;
+  line-height: 1.2;
+  font-size: 14px;
+  color: var(--custom-disabled);
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 900;
+}
+
 .blockMultiplierTd {
   text-align: right;
   font-weight: 900;

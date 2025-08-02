@@ -1,5 +1,5 @@
 "use client";
-import { Box, Loader, TextInput, Title } from "@mantine/core";
+import { Box, Loader, Text, TextInput, Title } from "@mantine/core";
 import styles from "./page.module.css";
 import Navbar from "@/components/Navbar";
 import {
@@ -26,16 +26,21 @@ import Image from "next/image";
 import { availableUpgrades } from "@/components/GameToolbar/upgrades";
 import { clickHandler } from "@/lib/utils";
 import Link from "next/link";
-import { IconArrowUpRight, IconX } from "@tabler/icons-react";
+import { IconArrowUpRight, IconBlocks, IconX } from "@tabler/icons-react";
 import { useContractStore } from "@/store/useContracts";
 import { useLaserEyes } from "@omnisat/lasereyes";
 import { TacoClickerContract } from "@/lib/contracts/tacoclicker";
-import { consumeOrThrow } from "@/lib/boxed";
+import { consumeOrNull, consumeOrThrow } from "@/lib/boxed";
 import { useStoreHydrated } from "@/hooks/useStoreHydrated";
 import MusicPlayer from "@/components/MusicPlayer";
-import { SingularAlkanesTransfer, ParsableAlkaneId } from "alkanesjs";
+import {
+  SingularAlkanesTransfer,
+  ParsableAlkaneId,
+  DecodableAlkanesResponse,
+} from "alkanesjs";
 import { z } from "zod";
 import { useActivityStore } from "@/store/activityStore";
+import { idclub_getholders } from "@/lib/apis/idclub";
 const amountSchema = z
   .number({
     invalid_type_error: "Value must be a number",
@@ -69,15 +74,24 @@ const toBigIntFixed8 = (v: number | string): bigint => {
   const [i, f = ""] = s.split(".");
   return BigInt(i) * SCALE_8 + BigInt((f + "00000000").slice(0, 8));
 };
-
+const SALSA_BLOCK_MODULO = 144;
 function ClickerGameView() {
   const { proofOfClickState } = useGameStore();
 
   const [isLoadingClaimButton, setIsLoadingClaimButton] = useState(false);
   const { address } = useLaserEyes();
   const { feeRate } = useGameStore();
-  const { tortillasPerBlock, unclaimedTortillas, taqueriaAlkaneIds } =
-    useUserGameStore();
+  const {
+    tortillasPerBlock,
+    unclaimedTortillas,
+    taqueriaAlkaneIds,
+    taquriaBetStates,
+    globalState,
+  } = useUserGameStore();
+  const [salsaWinnerTaqueriaAddress, setSalsaWinnerTaqueriaAddress] = useState<
+    string | null
+  >(null);
+  const { recentBlocks } = useGameStore();
   const { tacoClickerContract } = useContractStore();
   const { addActivity } = useActivityStore();
   const [multiplier, setMultiplier] = useState<string | number>(2);
@@ -85,6 +99,7 @@ function ClickerGameView() {
   const userTortillasPerBlock = tortillasPerBlock[address] ?? 0;
   const userUnclaimedTortillas = unclaimedTortillas[address] ?? 0;
   const taqueriaAlkaneId = taqueriaAlkaneIds[address] ?? null;
+  const taqueriaBetState = taquriaBetStates[address] ?? null;
 
   const { openModals } = useModalsStore();
 
@@ -136,6 +151,45 @@ function ClickerGameView() {
     }
     setIsLoadingClaimButton(false);
   }
+
+  useEffect(() => {
+    const fetchHolderOfWinnerTaqueria = async () => {
+      let winnerTaqueriaId = globalState?.salsa_state?.best_hash_owner ?? {
+        block: 0n,
+        tx: 0n,
+      };
+
+      let holders = consumeOrNull(
+        await idclub_getholders(`2:${winnerTaqueriaId.tx.toString()}`)
+      );
+      if (!holders) {
+        return;
+      }
+      setSalsaWinnerTaqueriaAddress(
+        holders?.data?.records?.[0]?.address ?? null
+      );
+    };
+
+    fetchHolderOfWinnerTaqueria();
+
+    return () => {
+      setSalsaWinnerTaqueriaAddress(null);
+    };
+  }, [globalState]);
+
+  let tortillaPerBlockFromSalsaReward = new DecodableAlkanesResponse(
+    (taqueriaBetState?.initial_salsa_debt ?? 0n) /
+      BigInt(TacoClickerContract.VESTING_WINDOW_FOR_SALSA_REWARD)
+  ).decodeTo("tokenValue");
+
+  const totalTortillasFromSalsaReward = new DecodableAlkanesResponse(
+    taqueriaBetState?.initial_salsa_debt ?? 0n
+  ).decodeTo("tokenValue");
+
+  const totalCollectedTortillasFromSalsaReward = new DecodableAlkanesResponse(
+    (taqueriaBetState?.initial_salsa_debt ?? 0n) -
+      (taqueriaBetState?.current_salsa_debt ?? 0n)
+  ).decodeTo("tokenValue");
 
   async function handleBet() {
     if (
@@ -202,9 +256,39 @@ function ClickerGameView() {
     setIsLoading(false);
   }
 
+  let nextSalsaBlock =
+    (recentBlocks?.[0]?.blockNumber ?? 0) +
+    (SALSA_BLOCK_MODULO -
+      ((recentBlocks?.[0]?.blockNumber ?? 0) % SALSA_BLOCK_MODULO));
+
   return (
     <Box className={styles.clickerContents}>
       <Box className={styles.clickerHeaderContainer}>
+        {(taqueriaBetState?.current_salsa_debt ?? 0n) > 0n && (
+          <Box className={styles.salsaRewardContainer}>
+            <Box className={styles.chiliIconContainer}>🌶️</Box>
+            <Box className={styles.salsaRewardText}>
+              <SvgTortillas size={24} strokeFill={customColors.dimmed0Dark} />
+              &nbsp;&nbsp;
+              {tortillaPerBlockFromSalsaReward.toLocaleString("en-US")}
+            </Box>
+            <Box className={styles.salsaRewardSubtext}>
+              extra tortillas/block from your recent salsa win
+            </Box>
+
+            <Box className={styles.salsaRewardRemaining}>
+              <Box className={styles.salsaRewardRemainingText}>
+                <Box className={styles.salsaRewardRemainingValue}>
+                  {totalCollectedTortillasFromSalsaReward.toLocaleString(
+                    "en-US"
+                  )}{" "}
+                  / {totalTortillasFromSalsaReward.toLocaleString("en-US")}{" "}
+                </Box>
+                tortillas remaining
+              </Box>
+            </Box>
+          </Box>
+        )}
         <Box className={styles.tortillaPerBlockContainer}>
           <Box className={styles.tortillaIconContainer}>
             <SvgTortillas size={48} strokeFill={customColors.dimmed0Dark} />
@@ -216,6 +300,7 @@ function ClickerGameView() {
             tortillas per block
           </Box>
         </Box>
+
         <Button
           className={styles.tortillaClaimButton}
           size="lg"
@@ -309,6 +394,43 @@ function ClickerGameView() {
         >
           Last hash found (proof of click):{" "}
           {proofOfClickState?.currentHash?.hash ?? ""}
+        </Box>
+      </Box>
+      <Box className={styles.salsaInfoContainer}>
+        <Button
+          href={`https://ordiscan.com/address/${salsaWinnerTaqueriaAddress}`}
+          target="_blank"
+          variant="transparent"
+          size="lg"
+          component={Link}
+          classNames={{
+            root: styles.viewAllButton,
+            label: styles.viewAllButtonLabel,
+            inner: styles.viewAllButtonInner,
+          }}
+          rightSection={<IconArrowUpRight size={18} strokeWidth={4} />}
+        >
+          Last salsa winner
+        </Button>
+        <Text className={styles.lastUpdated}>
+          Updated on:{" "}
+          {globalState?.salsa_state?.current_block?.toLocaleString("en-US") ??
+            "--"}
+        </Text>
+        <Box className={styles.salsaTooltip}>
+          🌶️ Next Salsa Block:
+          <Box className={styles.salsaTooltipCount}>
+            {nextSalsaBlock - (recentBlocks?.[0]?.blockNumber ?? 0)} blocks left
+          </Box>
+          <Box className={styles.salsaTooltipBlocks}>
+            {" "}
+            <IconBlocks size={18} /> {nextSalsaBlock.toLocaleString("en-US")}
+            <br />
+          </Box>
+        </Box>
+        <Box className={styles.salsaDisclaimer}>
+          ⚠️ A minimum upgrade of 1 Salsa Bar is required to play in the Salsa
+          Block
         </Box>
       </Box>
     </Box>
