@@ -33,18 +33,18 @@ export const PROVIDER = new Provider({
 export const AUDIO_PROVIDER = "https://tacoclicker.com/audio";
 
 export const ELECTRUM_API_URL = PROVIDER.electrumApiUrl;
-export const IDCLUB_URL = "https://idclub.io/marketplace/token/2:68357";
+export const IDCLUB_URL = "https://idclub.io/marketplace/token/2:68479";
 export const IDCLUB_HOLDERS_BASE_URL =
   "https://alkanes-api.idclub.io/indexer/holderPage";
 
 export const tacoClickerAlkaneId: AlkaneId = {
   block: 2n,
-  tx: 68356n,
+  tx: 68478n,
 };
 
 export const tortillaAlkaneId: AlkaneId = {
   block: 2n,
-  tx: 68357n,
+  tx: 68479n,
 };
 
 export const NETWORK_NAME = "mainnet";
