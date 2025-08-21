@@ -16,7 +16,7 @@
     "@omnisat/lasereyes": "^0.0.156",
     "@tabler/icons-react": "^3.34.0",
     "@tanstack/react-query": "^5.80.10",
-    "alkanesjs": "^1.2.1",
+    "alkanesjs": "^1.2.2",
     "bitcoinjs-lib": "^6.1.7",
     "borsher": "^4.0.0",
     "clsx": "^2.1.1",
