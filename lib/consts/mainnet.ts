@@ -28,6 +28,10 @@ export const PROVIDER = new Provider({
   network: bitcoin.networks.bitcoin,
   explorerUrl: "https://mempool.space",
   defaultFeeRate: 3,
+  pacerSettings: {
+    intervalMs: 500,
+    maxPerInterval: 5,
+  },
 });
 
 export const AUDIO_PROVIDER = "https://tacoclicker.com/audio";
