@@ -23,7 +23,8 @@ export const WALLETS: ProviderType[] = [UNISAT, OYL];
 export const WALLET_NETWORK = MAINNET;
 //https://signet.sandshrew.io/v1/94a9ab1efa54e81946d20959f774987b"
 export const PROVIDER = new Provider({
-  sandshrewUrl: "https://mainnet.alkanode.com",
+  sandshrewUrl:
+    "https://mainnet.subfrost.io/v4/114b48aeedb102d9c826fb4909ff2b71",
   electrumApiUrl: "https://tacoclicker.com/api/esplora",
   network: bitcoin.networks.bitcoin,
   explorerUrl: "https://mempool.space",
