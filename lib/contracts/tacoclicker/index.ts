@@ -81,7 +81,7 @@ export function formatScaled(
     decimals = 8,
     trim = true,
     sep = true,
-  }: { decimals?: number; trim?: boolean; sep?: boolean } = {}
+  }: { decimals?: number; trim?: boolean; sep?: boolean } = {},
 ): string {
   if (decimals < 0 || decimals > 8) throw new Error("decimals must be 0..8");
   const intPart = scaled / SCALE;
@@ -156,7 +156,7 @@ export function multiplierFromSeed(blockhashHex: string): bigint {
 
 export function applyMultiplier(
   valueScaled: bigint,
-  blockhashHex: string
+  blockhashHex: string,
 ): bigint {
   const m = multiplierFromSeed(blockhashHex); // scaled by 1e8
 
@@ -177,7 +177,7 @@ const MERKLE_TREE_GITHUB_URL =
   "https://raw.githubusercontent.com/bitapeslabs/tacoclicker-airdrop/refs/heads/main";
 
 async function getMerkleTree(
-  slug: "mainnet" | "signet"
+  slug: "mainnet" | "signet",
 ): Promise<BoxedResponse<IMerkleTree, FetchError>> {
   try {
     const url = `${MERKLE_TREE_GITHUB_URL}/tortilla-airdrop-${slug}.json`;
@@ -187,7 +187,7 @@ async function getMerkleTree(
     if (!res.ok) {
       return new BoxedError(
         FetchError.UnknownError,
-        `Failed to fetch Merkle tree from ${url}: ${res.statusText}`
+        `Failed to fetch Merkle tree from ${url}: ${res.statusText}`,
       );
     }
 
@@ -200,7 +200,7 @@ async function getMerkleTree(
       FetchError.UnknownError,
       `Failed to fetch Merkle tree: ${
         e instanceof Error ? e.message : String(e)
-      }`
+      }`,
     );
   }
 }
@@ -221,7 +221,7 @@ const MerkleDistributorABI = TokenABI.extend({
     params: {
       address: string;
       slug?: "mainnet" | "regtest" | "signet";
-    }
+    },
   ) {
     // -----------------------------
     //  CONFIG
@@ -253,14 +253,14 @@ const MerkleDistributorABI = TokenABI.extend({
       if (res.status === 404) {
         return new BoxedError(
           AlkanesSimulationError.UnknownError,
-          `No Merkle proof found for address ${params.address}`
+          `No Merkle proof found for address ${params.address}`,
         );
       }
       if (!res.ok) {
         const txt = await res.text().catch(() => "");
         return new BoxedError(
           AlkanesSimulationError.UnknownError,
-          `API error (${res.status}): ${txt || "unknown"}`
+          `API error (${res.status}): ${txt || "unknown"}`,
         );
       }
 
@@ -277,7 +277,7 @@ const MerkleDistributorABI = TokenABI.extend({
         AlkanesSimulationError.UnknownError,
         `Failed to fetch Merkle proof: ${
           e instanceof Error ? e.message : String(e)
-        }`
+        }`,
       );
     }
   }),
@@ -360,7 +360,7 @@ const TacoClickerABI = MerkleDistributorABI.extend({
     opcode,
     params: {
       blockhash: string;
-    }
+    },
   ) {
     try {
       const m = multiplierFromSeed(params.blockhash);
@@ -368,7 +368,7 @@ const TacoClickerABI = MerkleDistributorABI.extend({
     } catch (err) {
       return new BoxedError(
         AlkanesSimulationError.UnknownError,
-        (err as Error).message
+        (err as Error).message,
       );
     }
   }),
@@ -379,13 +379,13 @@ const TacoClickerABI = MerkleDistributorABI.extend({
     params: {
       taqueria: ISchemaAlkaneId;
       last_poc_hash: string;
-    }
+    },
   ) {
     try {
       const taqueriaBytes = borshSerialize(schemaAlkaneId, params.taqueria);
       const lastHash = Buffer.from(
         params.last_poc_hash.replace(/^0x/, ""),
-        "hex"
+        "hex",
       );
 
       const nonce = Math.floor(Math.random() * Number(1n << 32n));
@@ -400,7 +400,7 @@ const TacoClickerABI = MerkleDistributorABI.extend({
     } catch (err) {
       return new BoxedError(
         AlkanesSimulationError.UnknownError,
-        (err as Error).message
+        (err as Error).message,
       );
     }
   }),
@@ -408,7 +408,7 @@ const TacoClickerABI = MerkleDistributorABI.extend({
 
 export class TacoClickerContract extends abi.attach(
   AlkanesBaseContract,
-  TacoClickerABI
+  TacoClickerABI,
 ) {
   public static readonly FUNDING_ADDRESS = TACOCLICKER_FUNDING_ADDRESS;
 
@@ -431,29 +431,23 @@ export class TacoClickerContract extends abi.attach(
   constructor(
     provider: Provider,
     alkaneId: AlkaneId,
-    signPsbt: (psbt: string) => Promise<string>
+    signPsbt: (psbt: string) => Promise<string>,
   ) {
     super(provider, alkaneId, signPsbt);
     this.provider = provider;
   }
 
   public async getTaqueriasForAddress(
-    address: string
+    address: string,
   ): Promise<
     BoxedResponse<BorshInfer<typeof schemaAlkaneId>[], AlkanesExecuteError>
   > {
     try {
-      const { outpoints } = consumeOrThrow(
-        await this.provider.rpc.alkanes.alkanes_getAlkanesByAddress(address)
+      const { balances } = consumeOrThrow(
+        await this.provider.rpc.espo.getAddressBalances(address),
       );
 
-      const set = new Set(
-        outpoints.flatMap((op: any) =>
-          op.runes.map(
-            (r: any) => `${BigInt(r.rune.id.block)}:${BigInt(r.rune.id.tx)}`
-          )
-        )
-      );
+      const set = new Set<string>(Object.keys(balances));
 
       const alkanes = Array.from(set).map((s) => {
         const [block, tx] = s.split(":");
@@ -464,34 +458,35 @@ export class TacoClickerContract extends abi.attach(
       const callData: bigint[] = [
         107n,
         ...consumeOrThrow(
-          new Encodable({ alkanes }, schemaAlkaneList).encodeFrom("object")
+          new Encodable({ alkanes }, schemaAlkaneList).encodeFrom("object"),
         ),
       ];
 
       const sim = consumeOrThrow(await super.simulate({ callData }));
       const decoded = new DecodableAlkanesResponse(
         sim,
-        schemaAlkaneList
+        schemaAlkaneList,
       ).decodeTo("object");
 
       return new BoxedSuccess(decoded.alkanes);
     } catch (err) {
+      console.log("getTaqueriasForAddress error:", err);
       return new BoxedError(
         AlkanesExecuteError.UnknownError,
-        (err as Error).message
+        (err as Error).message,
       );
     }
   }
 
   public async getTaqueriaContractForAddress(
-    address: string
+    address: string,
   ): Promise<BoxedResponse<ControlledMintContract, AlkanesSimulationError>> {
     try {
       const taqs = consumeOrThrow(await this.getTaqueriasForAddress(address));
       if (taqs.length === 0) {
         return new BoxedError(
           AlkanesSimulationError.UnknownError,
-          "No taquerias found for this address"
+          "No taquerias found for this address",
         );
       }
 
@@ -500,7 +495,7 @@ export class TacoClickerContract extends abi.attach(
       const taqueria = new ControlledMintContract(
         this.provider,
         { block: BigInt(first.block), tx: BigInt(first.tx) },
-        super.signPsbt
+        super.signPsbt,
       );
 
       return new BoxedSuccess(taqueria);
@@ -508,7 +503,7 @@ export class TacoClickerContract extends abi.attach(
       console.log("viewGetTaqueria error:", err);
       return new BoxedError(
         AlkanesSimulationError.UnknownError,
-        (err as Error).message
+        (err as Error).message,
       );
     }
   }

@@ -28,6 +28,7 @@ export const PROVIDER = new Provider({
   electrumApiUrl: "https://tacoclicker.com/api/esplora",
   network: bitcoin.networks.bitcoin,
   explorerUrl: "https://mempool.space",
+  espoUrl: "https://api.alkanode.com/rpc",
   defaultFeeRate: 3,
   pacerSettings: {
     intervalMs: 500,

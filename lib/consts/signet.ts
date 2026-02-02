@@ -26,6 +26,7 @@ export const PROVIDER = new Provider({
   sandshrewUrl: "https://signet.mezcal.sh/sandshrew",
   electrumApiUrl: "https://signet.mezcal.sh/esplora",
   network: bitcoin.networks.testnet,
+  espoUrl: "https://api.alkanode.com/rpc",
   explorerUrl: "https://mempool.space/signet",
   defaultFeeRate: 3,
 });
